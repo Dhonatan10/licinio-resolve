@@ -1,0 +1,5219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Licínio Resolve">
+<meta name="application-name" content="Licínio Resolve">
+<meta name="theme-color" content="#0D2137">
+<meta name="msapplication-TileColor" content="#0D2137">
+<meta name="msapplication-TileImage" content="icons/icon-144.png">
+
+<!-- Ícones Apple (adicionar os arquivos na pasta icons/) -->
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
+
+<!-- Ícone padrão -->
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="32x32"  href="icons/icon-96.png">
+
+<meta name="description" content="Plataforma oficial de atendimento ao cidadão da Prefeitura de Licínio de Almeida. Relate problemas, acompanhe solicitações e receba atualizações pelo WhatsApp.">
+<title>Licínio Resolve — Prefeitura de Licínio de Almeida</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════ */
+:root {
+  /* Core palette */
+  --navy:       #0D2137;
+  --navy2:      #07162A;
+  --navy3:      #163352;
+  --emerald:    #0EB87F;
+  --emerald2:   #09966A;
+  --emerald3:   #E4F9F2;
+  --emerald4:   #C8F2E4;
+  --amber:      #F5A623;
+  --amber2:     #D4891A;
+  --amber3:     #FFF8EC;
+  --danger:     #E53935;
+  --danger-lt:  #FEF2F2;
+
+  /* Neutrals */
+  --white:      #FFFFFF;
+  --surface:    #F4F7FA;
+  --surface2:   #EAEEf4;
+  --surface3:   #D4DAE6;
+  --text:       #0D1B30;
+  --text2:      #4A5A74;
+  --text3:      #8696B2;
+
+  /* Typography */
+  --font-body:  'Figtree', sans-serif;
+  --font-disp:  'Bricolage Grotesque', sans-serif;
+
+  /* Radii */
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r:    16px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  /* Shadows */
+  --sh-xs: 0 1px 4px rgba(0,0,0,0.06);
+  --sh-sm: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
+  --sh:    0 4px 20px rgba(0,0,0,0.09), 0 1px 4px rgba(0,0,0,0.04);
+  --sh-lg: 0 8px 40px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.05);
+  --sh-em: 0 4px 24px rgba(14,184,127,0.28);
+  --sh-nv: 0 4px 24px rgba(13,33,55,0.32);
+
+  /* Safe areas */
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ═══════════════════════════════════════
+   RESET
+═══════════════════════════════════════ */
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: clip; /* evita scroll horizontal sem bloquear scroll vertical do mouse */
+}
+body {
+  font-family: var(--font-body);
+  background: var(--surface);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  /* overflow-x removido do body para não bloquear scroll com mouse wheel */
+  -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { width: 0; }
+
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
+.header {
+  background: var(--navy2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding-top: var(--safe-top);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 62px;
+  gap: 16px;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+.brand-icon {
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald2) 100%);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: var(--sh-em);
+}
+.brand-text h1 {
+  font-family: var(--font-disp);
+  font-size: clamp(15px, 3.5vw, 19px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.brand-text p {
+  font-size: 10px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-top: 1px;
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.nav-pill {
+  padding: 7px 14px;
+  border-radius: 100px;
+  background: transparent;
+  color: rgba(255,255,255,0.55);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  font-family: var(--font-body);
+  white-space: nowrap;
+  min-height: 36px;
+  display: flex; align-items: center;
+  touch-action: manipulation;
+  letter-spacing: 0.2px;
+}
+.nav-pill:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.08); }
+.nav-pill.active {
+  background: rgba(14,184,127,0.18);
+  color: var(--emerald);
+  border-color: rgba(14,184,127,0.3);
+}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+  background: var(--navy2);
+  padding: 36px 20px 72px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+.hero-glow {
+  position: absolute; pointer-events: none;
+  border-radius: 50%;
+}
+.hero-glow-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(14,184,127,0.18) 0%, transparent 70%);
+  top: -100px; left: -100px;
+}
+.hero-glow-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(245,166,35,0.12) 0%, transparent 70%);
+  top: -60px; right: -60px;
+}
+.hero-dots {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 580px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(14,184,127,0.15);
+  border: 1px solid rgba(14,184,127,0.3);
+  color: var(--emerald);
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 18px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.hero-eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+  animation: blink 2s infinite;
+}
+.hero h2 {
+  font-family: var(--font-disp);
+  font-size: clamp(28px, 6.5vw, 44px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.13;
+  margin-bottom: 14px;
+  letter-spacing: -0.5px;
+}
+.hero h2 em {
+  font-style: normal;
+  color: var(--amber);
+}
+.hero-desc {
+  font-size: clamp(14px, 3vw, 16px);
+  color: rgba(255,255,255,0.6);
+  line-height: 1.75;
+  max-width: 400px;
+  margin: 0 auto 24px;
+  font-weight: 400;
+}
+.hero-stats {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-stat {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r-sm);
+  padding: 10px 18px;
+  text-align: center;
+  min-width: 90px;
+  backdrop-filter: blur(8px);
+}
+.hero-stat-num {
+  font-family: var(--font-disp);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--amber);
+  line-height: 1;
+}
+.hero-stat-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════
+   FLOATING SEARCH
+═══════════════════════════════════════ */
+.search-float {
+  max-width: 640px;
+  margin: -28px auto 0;
+  padding: 0 16px;
+  position: relative;
+  z-index: 10;
+}
+.search-card {
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: 6px 6px 6px 18px;
+  box-shadow: var(--sh-lg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1.5px solid rgba(13,33,55,0.06);
+}
+.search-icon { color: var(--text3); font-size: 17px; flex-shrink: 0; }
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: transparent;
+  min-width: 0;
+  font-weight: 500;
+}
+.search-input::placeholder { color: var(--surface3); }
+.search-btn {
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 10px 18px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  min-height: 42px;
+  touch-action: manipulation;
+  letter-spacing: 0.2px;
+  transition: background 0.2s;
+}
+.search-btn:active { background: var(--navy3); }
+
+/* ═══════════════════════════════════════
+   STATUS STRIP
+═══════════════════════════════════════ */
+.trust-strip {
+  max-width: 640px;
+  margin: 12px auto 0;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.trust-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text3);
+  padding: 4px 10px;
+}
+.trust-chip + .trust-chip::before {
+  content: '·';
+  color: var(--surface3);
+  margin-right: 10px;
+  margin-left: 0;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+  animation: blink 2s infinite;
+}
+@keyframes blink {
+  0%,100% { opacity:1; }
+  50% { opacity:0.35; }
+}
+
+/* ═══════════════════════════════════════
+   LAYOUT WRAPPER
+═══════════════════════════════════════ */
+.app-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 16px 32px;
+}
+@media (min-width: 900px) {
+  .app-layout {
+    padding: 32px 24px;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  .sidebar-nav {
+    display: flex !important;
+  }
+  .bottom-nav { display: none !important; }
+  .bottom-spacer { display: none !important; }
+}
+
+/* ═══════════════════════════════════════
+   SIDEBAR (desktop only)
+═══════════════════════════════════════ */
+.sidebar-nav {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  position: sticky;
+  top: 80px;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all 0.18s;
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  text-align: left;
+  width: 100%;
+}
+.sidebar-item:hover { background: var(--surface2); color: var(--text); }
+.sidebar-item.active {
+  background: var(--emerald3);
+  color: var(--emerald2);
+}
+.sidebar-icon { font-size: 18px; flex-shrink: 0; }
+.sidebar-divider {
+  height: 1px;
+  background: var(--surface2);
+  margin: 8px 0;
+}
+
+/* ═══════════════════════════════════════
+   SECTION TITLES
+═══════════════════════════════════════ */
+.section-head {
+  margin-bottom: 20px;
+}
+.section-title {
+  font-family: var(--font-disp);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.section-sub {
+  font-size: 13px;
+  color: var(--text2);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════
+   TIPO GRID
+═══════════════════════════════════════ */
+.tipo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+@media (min-width: 480px) {
+  .tipo-grid { grid-template-columns: repeat(6, 1fr); }
+}
+.tipo-card {
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 13px 6px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  box-shadow: var(--sh-xs);
+  transition: all 0.18s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  min-height: 76px;
+  justify-content: center;
+}
+.tipo-card:active { transform: scale(0.94); }
+.tipo-card.selected {
+  border-color: var(--emerald);
+  background: var(--emerald3);
+  box-shadow: var(--sh-em);
+}
+.tipo-check {
+  display: none;
+  position: absolute;
+  top: -7px; right: -7px;
+  width: 20px; height: 20px;
+  background: var(--emerald);
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(14,184,127,0.4);
+}
+.tipo-card.selected .tipo-check { display: flex; }
+.tipo-emoji { font-size: clamp(22px, 4.5vw, 26px); line-height: 1; }
+.tipo-label {
+  font-size: clamp(8.5px, 1.8vw, 9.5px);
+  font-weight: 700;
+  color: var(--text2);
+  line-height: 1.3;
+}
+.tipo-card.selected .tipo-label { color: var(--emerald2); }
+.tipo-card.urgente {
+  border-color: rgba(229,57,53,0.2);
+  background: #fff8f8;
+}
+.tipo-card.urgente.selected {
+  border-color: var(--danger);
+  background: var(--danger-lt);
+  box-shadow: 0 4px 20px rgba(229,57,53,0.2);
+}
+.tipo-card.urgente.selected .tipo-label { color: var(--danger); }
+
+/* ═══════════════════════════════════════
+   FORM CARDS
+═══════════════════════════════════════ */
+.form-card {
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: 20px;
+  box-shadow: var(--sh-sm);
+  margin-bottom: 12px;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+.form-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.form-card-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px;
+  flex-shrink: 0;
+}
+.fci-title {
+  font-family: var(--font-disp);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+.fci-sub {
+  font-size: 11.5px;
+  color: var(--text2);
+  margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════
+   INPUTS
+═══════════════════════════════════════ */
+.field { margin-bottom: 12px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: 0.1px;
+}
+.field label .req { color: var(--danger); margin-left: 2px; }
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--surface2);
+  border-radius: var(--r-sm);
+  font-size: 16px;
+  color: var(--text);
+  background: var(--surface);
+  font-family: var(--font-body);
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  font-weight: 500;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--emerald);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(14,184,127,0.12);
+}
+.field textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.65;
+  font-size: 15px;
+}
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.field-hint {
+  font-size: 11px;
+  color: var(--text2);
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.45;
+}
+.char-counter {
+  text-align: right;
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════
+   UPLOAD
+═══════════════════════════════════════ */
+.upload-zone {
+  border: 2px dashed var(--surface3);
+  border-radius: var(--r-sm);
+  padding: 28px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--surface);
+  touch-action: manipulation;
+}
+.upload-zone:active { background: var(--emerald3); border-color: var(--emerald); }
+.upload-zone.has-file { border-color: var(--emerald); background: var(--emerald3); }
+.upload-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+.upload-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.upload-sub { font-size: 11.5px; color: var(--text2); }
+.upload-sub strong { color: var(--emerald); }
+#upload-input { display: none; }
+.photo-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.photo-thumb {
+  aspect-ratio: 1;
+  border-radius: var(--r-xs);
+  overflow: hidden;
+  position: relative;
+  background: var(--surface2);
+  box-shadow: var(--sh-xs);
+}
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-remove {
+  position: absolute; top: 4px; right: 4px;
+  width: 24px; height: 24px;
+  background: rgba(0,0,0,0.7);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: #fff; cursor: pointer; border: none;
+}
+.add-more-btn {
+  aspect-ratio: 1;
+  border-radius: var(--r-xs);
+  border: 2px dashed var(--surface3);
+  background: var(--surface);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--text2);
+  transition: all 0.18s;
+  gap: 4px;
+  touch-action: manipulation;
+}
+.add-more-btn span { font-size: 10px; font-weight: 700; }
+.add-more-btn:active { border-color: var(--emerald); color: var(--emerald); background: var(--emerald3); }
+
+/* ═══════════════════════════════════════
+   LOCATION
+═══════════════════════════════════════ */
+.loc-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.loc-btn {
+  padding: 14px 12px;
+  border-radius: var(--r-sm);
+  border: 2px solid var(--surface2);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  touch-action: manipulation;
+  min-height: 58px;
+}
+.loc-btn:active { border-color: var(--emerald); background: var(--emerald3); }
+.loc-btn.active {
+  border-color: var(--emerald);
+  background: var(--emerald3);
+  box-shadow: 0 4px 12px rgba(14,184,127,0.18);
+}
+.loc-btn-icon { font-size: 22px; flex-shrink: 0; }
+.loc-btn-text p { font-size: 13px; font-weight: 700; color: var(--text); }
+.loc-btn-text span { font-size: 10.5px; color: var(--text2); }
+.loc-status {
+  background: var(--emerald3);
+  border: 1.5px solid rgba(14,184,127,0.35);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.loc-status.show { display: flex; }
+.loc-status-icon { font-size: 18px; flex-shrink: 0; }
+.loc-status p { font-size: 13px; font-weight: 700; color: var(--emerald2); }
+.loc-status span { font-size: 11px; color: var(--text2); display: block; margin-top: 2px; }
+
+/* ═══════════════════════════════════════
+   PRIORITY
+═══════════════════════════════════════ */
+.prioridade-btns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.prior-btn {
+  padding: 13px 6px;
+  border-radius: var(--r-sm);
+  border: 2px solid var(--surface2);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: center;
+  font-family: var(--font-body);
+  touch-action: manipulation;
+  min-height: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.prior-btn:active { transform: scale(0.95); }
+.prior-emoji { font-size: 20px; }
+.prior-label { font-size: 11px; font-weight: 700; color: var(--text2); }
+.prior-btn.p-normal.active { border-color: var(--emerald); background: var(--emerald3); }
+.prior-btn.p-normal.active .prior-label { color: var(--emerald2); }
+.prior-btn.p-alta.active { border-color: var(--amber); background: var(--amber3); }
+.prior-btn.p-alta.active .prior-label { color: var(--amber2); }
+.prior-btn.p-urgente.active { border-color: var(--danger); background: var(--danger-lt); }
+.prior-btn.p-urgente.active .prior-label { color: var(--danger); }
+
+/* ═══════════════════════════════════════
+   ANÔNIMO
+═══════════════════════════════════════ */
+.dados-check {
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  border: 2px solid var(--surface2);
+  transition: all 0.18s;
+  touch-action: manipulation;
+  min-height: 54px;
+}
+.dados-check:active { border-color: var(--emerald); }
+.dados-check input[type="checkbox"] {
+  width: 20px; height: 20px;
+  accent-color: var(--emerald);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.dados-check label { font-size: 13px; font-weight: 700; color: var(--text); cursor: pointer; }
+.dados-check p { font-size: 11px; color: var(--text2); margin-top: 2px; line-height: 1.35; }
+
+/* ═══════════════════════════════════════
+   SUBMIT AREA
+═══════════════════════════════════════ */
+.submit-area {
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: 20px;
+  box-shadow: var(--sh-sm);
+  border: 1px solid rgba(0,0,0,0.04);
+  margin-bottom: 14px;
+}
+.submit-summary {
+  background: linear-gradient(135deg, var(--emerald3) 0%, #f4fdf9 100%);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: none;
+  border: 1px solid rgba(14,184,127,0.22);
+}
+.submit-summary.show { display: block; }
+.summary-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--emerald2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+.summary-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  align-items: flex-start;
+}
+.summary-item b { font-weight: 700; color: var(--text); }
+.summary-item p { color: var(--text2); font-size: 11.5px; margin-top: 1px; }
+.btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald2) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 17px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-disp);
+  box-shadow: var(--sh-em);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  letter-spacing: -0.1px;
+}
+.btn-submit:active { transform: scale(0.98); opacity: 0.9; }
+.terms-txt {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 10px;
+  line-height: 1.65;
+}
+.terms-txt strong { color: var(--text2); }
+
+/* ═══════════════════════════════════════
+   SUCCESS
+═══════════════════════════════════════ */
+.success-screen {
+  display: none;
+  text-align: center;
+  padding: 36px 16px;
+  animation: fadeUp 0.4s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.success-circle {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--emerald) 0%, #06d6a0 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px;
+  margin: 0 auto 22px;
+  box-shadow: 0 12px 40px rgba(14,184,127,0.4);
+  animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.success-screen h2 {
+  font-family: var(--font-disp);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.success-screen p {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.75;
+  max-width: 360px;
+  margin: 0 auto 24px;
+}
+.protocolo-box {
+  background: var(--emerald3);
+  border: 2px solid rgba(14,184,127,0.35);
+  border-radius: var(--r-sm);
+  padding: 14px 28px;
+  display: inline-block;
+  margin-bottom: 24px;
+}
+.protocolo-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--emerald2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.protocolo-num {
+  font-family: var(--font-disp);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: 3px;
+  margin-top: 2px;
+}
+.success-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-track {
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 13px 22px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.18s;
+  box-shadow: var(--sh-nv);
+  touch-action: manipulation;
+  min-height: 48px;
+}
+.btn-track:active { opacity: 0.85; }
+.btn-new {
+  background: var(--surface);
+  color: var(--text);
+  border: 2px solid var(--surface2);
+  border-radius: var(--r-sm);
+  padding: 13px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.18s;
+  touch-action: manipulation;
+  min-height: 48px;
+}
+.btn-new:active { border-color: var(--emerald); background: var(--emerald3); }
+
+/* ═══════════════════════════════════════
+   WPP SUCCESS BOX
+═══════════════════════════════════════ */
+.wpp-success-info {
+  background: #E7FEE7;
+  border: 1.5px solid #25D366;
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  text-align: left;
+}
+.wpp-success-icon { font-size: 24px; flex-shrink: 0; }
+.wpp-success-info p { font-size: 13px; color: #15803D; line-height: 1.65; }
+
+/* ═══════════════════════════════════════
+   AMBULÂNCIA ALERT
+═══════════════════════════════════════ */
+#ambulancia-alert {
+  background: var(--danger-lt);
+  border: 2px solid rgba(229,57,53,0.3);
+  border-radius: var(--r-sm);
+  padding: 16px;
+  margin-bottom: 14px;
+  display: none;
+}
+
+/* ═══════════════════════════════════════
+   SLA BADGE
+═══════════════════════════════════════ */
+.sla-info {
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  border: 1px solid #BFDBFE;
+  border-radius: var(--r-sm);
+  padding: 11px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: #1E40AF;
+}
+
+/* ═══════════════════════════════════════
+   PAGES
+═══════════════════════════════════════ */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* ═══════════════════════════════════════
+   SOLICITATIONS LIST
+═══════════════════════════════════════ */
+.solicit-item {
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 16px;
+  margin-bottom: 10px;
+  border: 1.5px solid rgba(0,0,0,0.05);
+  box-shadow: var(--sh-xs);
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.18s;
+  touch-action: manipulation;
+}
+.solicit-item:active { border-color: var(--emerald); box-shadow: var(--sh-em); }
+.solicit-emoji { font-size: 32px; flex-shrink: 0; }
+.solicit-info { flex: 1; min-width: 0; }
+.solicit-titulo { font-size: 14px; font-weight: 700; color: var(--text); }
+.solicit-local {
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.solicit-data { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.status-badge {
+  padding: 5px 11px;
+  border-radius: 100px;
+  font-size: 10.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.2px;
+}
+.s-aberto    { background: #EFF6FF; color: #1D4ED8; }
+.s-andamento { background: #FFFBEB; color: #92400E; }
+.s-resolvido { background: #F0FDF4; color: #15803D; }
+.s-urgente   { background: var(--danger-lt); color: var(--danger); }
+
+/* ═══════════════════════════════════════
+   NOTICES
+═══════════════════════════════════════ */
+.aviso-item {
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 18px;
+  margin-bottom: 12px;
+  border: 1.5px solid rgba(0,0,0,0.05);
+  box-shadow: var(--sh-sm);
+}
+.aviso-topo {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.aviso-emo { font-size: 28px; flex-shrink: 0; }
+.aviso-titulo { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
+.aviso-data { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.aviso-body { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+/* ═══════════════════════════════════════
+   SOBRE
+═══════════════════════════════════════ */
+.sobre-header {
+  background: linear-gradient(135deg, var(--navy2) 0%, var(--navy3) 100%);
+  border-radius: var(--r-lg);
+  padding: 28px 22px;
+  margin-bottom: 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.sobre-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.sobre-header h3 {
+  font-family: var(--font-disp);
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  position: relative;
+}
+.sobre-header p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+  position: relative;
+}
+.beneficio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.beneficio-card {
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 16px;
+  border: 1.5px solid rgba(0,0,0,0.05);
+  box-shadow: var(--sh-xs);
+  text-align: center;
+}
+.beneficio-num {
+  font-family: var(--font-disp);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--navy);
+}
+.beneficio-label {
+  font-size: 10.5px;
+  color: var(--text2);
+  font-weight: 600;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.feature-card {
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 18px;
+  margin-bottom: 10px;
+  border: 1.5px solid rgba(0,0,0,0.05);
+  box-shadow: var(--sh-sm);
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.feature-icon {
+  width: 46px; height: 46px;
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.feature-title {
+  font-family: var(--font-disp);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+.feature-desc { font-size: 12.5px; color: var(--text2); line-height: 1.6; }
+.cta-prefeito {
+  background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald2) 100%);
+  border-radius: var(--r-lg);
+  padding: 24px 20px;
+  text-align: center;
+  margin-bottom: 14px;
+  box-shadow: var(--sh-em);
+}
+.cta-prefeito h4 {
+  font-family: var(--font-disp);
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.cta-prefeito p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.78);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.btn-wpp-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: var(--emerald2);
+  font-family: var(--font-disp);
+  font-size: 14px;
+  font-weight: 800;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 14px 24px;
+  cursor: pointer;
+  touch-action: manipulation;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  transition: all 0.18s;
+  min-height: 50px;
+}
+.btn-wpp-cta:active { transform: scale(0.97); }
+
+/* ═══════════════════════════════════════
+   MODAL
+═══════════════════════════════════════ */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(7,22,42,0.65);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding-bottom: var(--safe-bottom);
+}
+.modal-overlay.open { display: flex; }
+.modal-sheet {
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 20px 18px;
+  padding-bottom: calc(28px + var(--safe-bottom));
+  width: 100%;
+  max-width: 640px;
+  max-height: 90dvh;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: sheetUp 0.32s cubic-bezier(0.32,0.72,0,1);
+  overscroll-behavior: contain;
+}
+@keyframes sheetUp {
+  from { transform: translateY(80px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.modal-handle {
+  width: 40px; height: 4px;
+  background: var(--surface3);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+.modal-title {
+  font-family: var(--font-disp);
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.tracking-result { display: none; }
+.tracking-result.show { display: block; }
+.track-header {
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.track-id {
+  font-family: var(--font-disp);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--navy);
+}
+.track-tipo { font-size: 12px; color: var(--text2); margin-top: 3px; }
+
+/* ═══════════════════════════════════════
+   TIMELINE
+═══════════════════════════════════════ */
+.timeline { display: flex; flex-direction: column; }
+.tl-item { display: flex; gap: 12px; position: relative; }
+.tl-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30px;
+  flex-shrink: 0;
+}
+.tl-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  z-index: 1;
+  font-weight: 700;
+}
+.tl-dot.done    { background: var(--emerald); color: #fff; }
+.tl-dot.current { background: var(--amber); color: #fff; animation: pulse 1.6s infinite; }
+.tl-dot.pending { background: var(--surface2); color: var(--text3); }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,166,35,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(245,166,35,0); }
+}
+.tl-line {
+  width: 2px; flex: 1;
+  background: var(--surface2);
+  min-height: 18px;
+}
+.tl-line.done { background: var(--emerald); }
+.tl-content { padding: 2px 0 22px; flex: 1; }
+.tl-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.tl-date { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+/* ═══════════════════════════════════════
+   PROGRESS
+═══════════════════════════════════════ */
+.detalhe-progresso {
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.progresso-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+.progresso-bar {
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.progresso-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--emerald) 0%, #06d6a0 100%);
+  transition: width 0.5s ease;
+}
+.progresso-pct {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--emerald2);
+}
+.detalhe-obs {
+  background: var(--amber3);
+  border: 1.5px solid rgba(245,166,35,0.4);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.detalhe-obs-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--amber2);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 5px;
+}
+.detalhe-obs p { font-size: 13px; color: var(--text); line-height: 1.65; }
+
+/* ═══════════════════════════════════════
+   BOTTOM NAV (mobile)
+═══════════════════════════════════════ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,0.96);
+  border-top: 1px solid var(--surface2);
+  padding: 6px 8px;
+  padding-bottom: calc(6px + var(--safe-bottom));
+  display: flex;
+  justify-content: space-around;
+  z-index: 100;
+  box-shadow: 0 -4px 28px rgba(0,0,0,0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.bnav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 7px 8px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all 0.18s;
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+  touch-action: manipulation;
+  min-width: 52px;
+  flex: 1;
+  max-width: 80px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.bnav-item .bnav-icon { font-size: 20px; }
+.bnav-item .bnav-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text3);
+}
+.bnav-item.active { background: var(--emerald3); }
+.bnav-item.active .bnav-label { color: var(--emerald2); }
+.bnav-center { margin-top: -22px; max-width: 70px; }
+.bnav-center .bnav-icon-big {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald2) 100%);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  box-shadow: var(--sh-em);
+  border: 3px solid #fff;
+  transition: all 0.18s;
+}
+.bnav-center:active .bnav-icon-big { transform: scale(0.92); }
+.bnav-center.active .bnav-icon-big {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy3) 100%);
+  box-shadow: var(--sh-nv);
+}
+.bottom-spacer { height: calc(90px + var(--safe-bottom)); }
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+#toast {
+  position: fixed;
+  bottom: calc(100px + var(--safe-bottom));
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--navy);
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 300;
+  white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  pointer-events: none;
+  font-family: var(--font-body);
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════════
+   ADMIN BUTTON
+═══════════════════════════════════════ */
+#btn-ir-admin {
+  position: fixed;
+  bottom: calc(100px + var(--safe-bottom));
+  right: 16px;
+  width: 44px; height: 44px;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 90;
+  box-shadow: var(--sh-nv);
+  touch-action: manipulation;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+#btn-ir-admin:hover { opacity: 1; }
+@media (min-width: 900px) {
+  #btn-ir-admin { bottom: 20px; }
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+.footer-gov {
+  background: var(--navy2);
+  text-align: center;
+  padding: 20px 16px 24px;
+  color: rgba(255,255,255,0.4);
+  font-size: 11px;
+  line-height: 1.9;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.footer-gov strong { color: rgba(255,255,255,0.75); }
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  color: rgba(255,255,255,0.35);
+  font-size: 10.5px;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+/* ═══════════════════════════════════════
+   LGPD / TERMOS / ACESSIBILIDADE MODAIS
+═══════════════════════════════════════ */
+.modal-doc {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(7,22,42,0.7);
+  z-index: 800;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.modal-doc.open { display: flex; }
+.modal-doc-sheet {
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 640px;
+  max-height: 88dvh; max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  animation: sheetUp 0.3s cubic-bezier(0.32,0.72,0,1);
+}
+.modal-doc-header {
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.modal-doc-title {
+  font-family: var(--font-disp);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+}
+.modal-doc-close {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2);
+  touch-action: manipulation;
+}
+.modal-doc-body {
+  overflow-y: auto;
+  padding: 20px;
+  overscroll-behavior: contain;
+  flex: 1;
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.75;
+}
+.modal-doc-body h3 {
+  font-family: var(--font-disp);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 18px 0 6px;
+}
+.modal-doc-body h3:first-child { margin-top: 0; }
+.modal-doc-body p { margin-bottom: 10px; }
+.modal-doc-body ul { padding-left: 18px; margin-bottom: 10px; }
+.modal-doc-body li { margin-bottom: 4px; }
+.modal-doc-badge {
+  display: inline-block;
+  background: var(--emerald3);
+  color: var(--emerald2);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ═══════════════════════════════════════
+   SLA — BADGE VENCIDO/ALERTA
+═══════════════════════════════════════ */
+.sla-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 100px;
+  margin-top: 4px;
+}
+.sla-badge-ok     { background: #F0FDF4; color: #15803D; }
+.sla-badge-warn   { background: #FFFBEB; color: #92400E; }
+.sla-badge-vencido { background: var(--danger-lt); color: var(--danger); }
+
+/* ═══════════════════════════════════════
+   LOG DE AUDITORIA
+═══════════════════════════════════════ */
+.log-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--surface2);
+}
+.log-item:last-child { border-bottom: none; }
+.log-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.log-dot-status  { background: var(--emerald); }
+.log-dot-apagou  { background: var(--danger); }
+.log-dot-obs     { background: var(--amber); }
+.log-meta {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+.log-desc {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════
+   ═══════ ADMIN PANEL ═══════
+═══════════════════════════════════════ */
+.admin-page { display: none; }
+.admin-page.active { display: block; }
+
+/* Admin Login */
+.admin-login {
+  min-height: 100dvh; min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  padding-top: calc(24px + var(--safe-top));
+  padding-bottom: calc(24px + var(--safe-bottom));
+  background: var(--navy2);
+  position: relative;
+  overflow: hidden;
+}
+.admin-login::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.admin-login::after {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(14,184,127,0.15) 0%, transparent 70%);
+  bottom: -200px; right: -200px;
+  border-radius: 50%;
+}
+.admin-login-card {
+  background: #fff;
+  border-radius: var(--r-xl);
+  padding: 36px 28px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+  position: relative;
+  z-index: 1;
+}
+.admin-login-logo { text-align: center; margin-bottom: 28px; }
+.admin-login-logo .brand-icon-big {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald2) 100%);
+  border-radius: var(--r-lg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  margin: 0 auto 14px;
+  box-shadow: var(--sh-em);
+}
+.admin-login-logo h2 {
+  font-family: var(--font-disp);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+}
+.admin-login-logo p { font-size: 12.5px; color: var(--text2); margin-top: 5px; }
+.admin-login-error {
+  background: var(--danger-lt);
+  border: 1.5px solid rgba(229,57,53,0.3);
+  border-radius: var(--r-sm);
+  padding: 11px 14px;
+  font-size: 13px;
+  color: var(--danger);
+  margin-bottom: 14px;
+  display: none;
+  text-align: center;
+  font-weight: 700;
+}
+.admin-login-error.show { display: block; }
+.admin-login-btn {
+  width: 100%;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--font-disp);
+  margin-top: 6px;
+  box-shadow: var(--sh-nv);
+  transition: all 0.18s;
+  touch-action: manipulation;
+  min-height: 52px;
+  letter-spacing: -0.1px;
+}
+.admin-login-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+/* Admin Header */
+.admin-header {
+  background: var(--navy2);
+  padding: 14px 20px;
+  padding-top: calc(14px + var(--safe-top));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 12px;
+}
+.admin-header h1 {
+  font-family: var(--font-disp);
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+.admin-header p {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  margin-top: 2px;
+}
+.admin-logout {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.18s;
+  touch-action: manipulation;
+  min-height: 36px;
+}
+.admin-logout:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+/* Admin Tabs */
+.admin-tabs {
+  background: #fff;
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--surface2);
+  padding: 0 4px;
+  gap: 0;
+  -webkit-overflow-scrolling: touch;
+}
+.admin-tab {
+  padding: 14px 18px;
+  border: none;
+  background: none;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text3);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  border-bottom: 3px solid transparent;
+  transition: all 0.18s;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.1px;
+}
+.admin-tab:hover { color: var(--text); }
+.admin-tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+.tab-badge {
+  background: var(--navy);
+  color: #fff;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  min-width: 20px;
+  text-align: center;
+}
+.tab-badge.urgente { background: var(--danger); }
+
+/* Admin Content */
+.admin-content { max-width: 1100px; margin: 0 auto; padding: 20px 16px 40px; }
+.admin-tab-content { display: none; }
+.admin-tab-content.active { display: block; }
+.admin-section-title {
+  font-family: var(--font-disp);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 14px;
+  margin-top: 20px;
+  letter-spacing: -0.2px;
+}
+.admin-section-title:first-child { margin-top: 0; }
+
+/* Admin Stats */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+@media (min-width: 640px) {
+  .admin-stats { grid-template-columns: repeat(4, 1fr); }
+}
+.admin-stat-card {
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 16px;
+  border: 1.5px solid rgba(0,0,0,0.05);
+  box-shadow: var(--sh-xs);
+  text-align: center;
+}
+.admin-stat-num {
+  font-family: var(--font-disp);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1;
+}
+.admin-stat-label {
+  font-size: 10.5px;
+  color: var(--text2);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 5px;
+}
+
+/* Taxa Card */
+.taxa-card {
+  background: linear-gradient(135deg, var(--emerald3) 0%, #f4fdf9 100%);
+  border: 1.5px solid rgba(14,184,127,0.25);
+  border-radius: var(--r-sm);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+/* Admin Search */
+.admin-search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  align-items: center;
+}
+.admin-search input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid var(--surface2);
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  color: var(--text);
+  background: #fff;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.18s;
+  font-weight: 500;
+}
+.admin-search input:focus { border-color: var(--emerald); }
+.btn-exportar {
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 12px 18px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--font-body);
+  white-space: nowrap;
+  transition: all 0.18s;
+  min-height: 46px;
+  touch-action: manipulation;
+}
+.btn-exportar:active { opacity: 0.85; }
+
+/* Admin Filters */
+.admin-filtros {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.filtro-btn {
+  padding: 7px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--surface2);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.18s;
+  touch-action: manipulation;
+}
+.filtro-btn:hover { border-color: var(--navy); color: var(--navy); }
+.filtro-btn.active {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+/* Admin Cards */
+.admin-card {
+  background: #fff;
+  border-radius: var(--r-sm);
+  border: 1.5px solid rgba(0,0,0,0.05);
+  box-shadow: var(--sh-xs);
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.18s;
+}
+.admin-card-urgente { border-left: 4px solid var(--danger); }
+.admin-card-topo {
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.admin-card-emoji { font-size: 26px; flex-shrink: 0; }
+.admin-card-info { flex: 1; min-width: 0; }
+.admin-card-id {
+  font-family: var(--font-disp);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: 0.5px;
+}
+.admin-card-tipo { font-size: 14px; font-weight: 700; color: var(--text); margin-top: 1px; }
+.admin-card-local { font-size: 12px; color: var(--text2); margin-top: 3px; }
+.admin-card-meta {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 3px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.admin-card-body { padding: 0 16px 16px; border-top: 1px solid var(--surface2); margin-top: 0; }
+.admin-card-expandir {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--emerald2);
+  cursor: pointer;
+  font-family: var(--font-body);
+  padding: 12px 16px;
+  display: block;
+  width: 100%;
+  text-align: left;
+  border-top: 1px solid var(--surface2);
+  touch-action: manipulation;
+}
+.admin-obs-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--surface2);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-family: var(--font-body);
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  transition: border-color 0.18s;
+  color: var(--text);
+  background: var(--surface);
+  margin: 12px 0;
+}
+.admin-obs-input:focus { border-color: var(--emerald); background: #fff; }
+.admin-card-acoes {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.admin-select-status {
+  flex: 1;
+  min-width: 160px;
+  padding: 10px 14px;
+  border: 2px solid var(--surface2);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.18s;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+}
+.admin-select-status:focus { border-color: var(--emerald); background: #fff; }
+.btn-admin-salvar {
+  padding: 10px 18px;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--font-body);
+  touch-action: manipulation;
+  white-space: nowrap;
+  min-height: 44px;
+  transition: all 0.18s;
+}
+.btn-admin-salvar:active { opacity: 0.85; }
+.btn-admin-apagar {
+  padding: 10px 14px;
+  background: transparent;
+  color: var(--danger);
+  border: 2px solid rgba(229,57,53,0.25);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--font-body);
+  touch-action: manipulation;
+  white-space: nowrap;
+  min-height: 44px;
+  transition: all 0.18s;
+}
+.btn-admin-apagar:hover {
+  background: var(--danger-lt);
+  border-color: var(--danger);
+}
+.btn-admin-apagar:active { opacity: 0.75; }
+
+/* Modal de confirmação de exclusão */
+#modal-confirmar-exclusao {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(7,22,42,0.65);
+  z-index: 700;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+#modal-confirmar-exclusao.open { display: flex; }
+.exclusao-sheet {
+  background: #fff;
+  border-radius: var(--r-xl);
+  padding: 28px 24px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--sh-lg);
+  animation: sheetUp 0.25s cubic-bezier(0.32,0.72,0,1);
+}
+.exclusao-icon {
+  font-size: 44px;
+  margin-bottom: 12px;
+}
+.exclusao-titulo {
+  font-family: var(--font-disp);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.exclusao-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.exclusao-id {
+  display: inline-block;
+  background: var(--danger-lt);
+  color: var(--danger);
+  font-weight: 800;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+}
+.exclusao-acoes {
+  display: flex;
+  gap: 10px;
+}
+.btn-exclusao-cancelar {
+  flex: 1;
+  padding: 13px;
+  background: var(--surface);
+  color: var(--text2);
+  border: 2px solid var(--surface2);
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--font-body);
+  touch-action: manipulation;
+  transition: all 0.18s;
+}
+.btn-exclusao-cancelar:hover { background: var(--surface2); }
+.btn-exclusao-confirmar {
+  flex: 1;
+  padding: 13px;
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--font-body);
+  touch-action: manipulation;
+  transition: all 0.18s;
+}
+.btn-exclusao-confirmar:hover { background: #c62828; }
+.btn-exclusao-confirmar:active { opacity: 0.85; }
+.admin-wpp-info {
+  font-size: 12px;
+  color: var(--text2);
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  line-height: 1.6;
+}
+.admin-card-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.65;
+  margin-bottom: 10px;
+  padding: 12px 0 0;
+}
+
+/* Config Panel */
+.config-card {
+  background: #fff;
+  border-radius: var(--r-sm);
+  border: 1.5px solid rgba(0,0,0,0.05);
+  box-shadow: var(--sh-xs);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.config-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--surface2);
+  gap: 16px;
+}
+.config-row:last-child { border-bottom: none; }
+.config-label { font-size: 13px; font-weight: 700; color: var(--text); }
+.config-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.toggle-switch {
+  width: 46px; height: 26px;
+  border-radius: 13px;
+  background: var(--surface3);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.25s;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}
+.toggle-switch.on { background: var(--emerald); }
+.toggle-knob {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 3px; left: 3px;
+  transition: transform 0.25s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch.on .toggle-knob { transform: translateX(20px); }
+
+/* Admin Aviso Form */
+.aviso-form-card {
+  background: #fff;
+  border-radius: var(--r-sm);
+  border: 1.5px solid rgba(0,0,0,0.05);
+  box-shadow: var(--sh-sm);
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+/* ═══════════════════════════════════════
+   ADMIN — CHARTS & REPORTS
+═══════════════════════════════════════ */
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.bar-label {
+  width: 130px;
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11.5px;
+}
+.bar-track {
+  flex: 1;
+  height: 20px;
+  background: var(--surface2);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.6s ease;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+}
+.bar-count {
+  width: 34px;
+  flex-shrink: 0;
+  text-align: right;
+  font-weight: 800;
+  color: var(--text2);
+  font-size: 12px;
+}
+.bar-pct {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+}
+.rel-exec-item {
+  text-align: center;
+}
+.rel-exec-num {
+  font-family: var(--font-disp);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--amber);
+  line-height: 1;
+}
+.rel-exec-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+.report-card {
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 16px;
+  border: 1.5px solid rgba(0,0,0,0.05);
+  box-shadow: var(--sh-xs);
+  margin-bottom: 10px;
+}
+.sla-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  margin-bottom: 6px;
+}
+.sla-ok   { background:#F0FDF4;color:#15803D; }
+.sla-warn { background:#FFFBEB;color:#92400E; }
+.sla-bad  { background:var(--danger-lt);color:var(--danger); }
+@media (max-width:600px) {
+  #dashboard-row2 { grid-template-columns: 1fr !important; }
+}
+
+@media (min-width: 900px) {
+  .search-float { max-width: 800px; }
+  .trust-strip { max-width: 800px; }
+  .hero { padding-bottom: 80px; }
+  .admin-stats { grid-template-columns: repeat(4, 1fr); }
+  .tipo-grid { grid-template-columns: repeat(6, 1fr); }
+}
+
+
+
+
+
+.header{
+  width: 100%;
+  background: #00142e;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.header-inner{
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  min-height: 62px;
+}
+
+.brand-logo{
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+  border-radius: 10px;
+}
+
+.brand-text{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.brand-text h1{
+  margin: 0;
+  color: #fff;
+  font-size: clamp(13px, 3.5vw, 20px);
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand-text p{
+  margin: 0;
+  color: #8ea2c9;
+  font-size: clamp(8px, 2vw, 12px);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-nav{
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════
+   CORREÇÕES RESPONSIVAS MOBILE
+═══════════════════════════════════════ */
+
+/* Impede qualquer overflow horizontal na raiz */
+html {
+  max-width: 100%;
+}
+body {
+  max-width: 100%;
+}
+
+/* Impede que glows decorativos causem scroll horizontal */
+.hero-glow-1,
+.hero-glow-2 {
+  max-width: 100vw;
+}
+
+/* Toast não pode ser mais largo que a tela */
+#toast {
+  white-space: normal;
+  text-align: center;
+  max-width: calc(100vw - 40px);
+  width: max-content;
+}
+
+/* bar-label com largura fixa pode estourar em mobile */
+.bar-label {
+  width: auto;
+  min-width: 70px;
+  max-width: 110px;
+}
+
+/* Em telas muito estreitas, esconde os nav-pills do header e usa só o bottom-nav */
+@media (max-width: 480px) {
+  .header-nav {
+    display: none;
+  }
+  .header-brand {
+    max-width: 100%;
+  }
+  .header-inner {
+    padding: 10px 14px;
+    min-height: 56px;
+  }
+  .brand-logo {
+    width: 34px;
+    height: 34px;
+  }
+  .brand-text h1 {
+    font-size: 15px;
+  }
+  .brand-text p {
+    font-size: 8px;
+  }
+}
+
+/* Nav pills: quebra em 2 linhas se necessário em telas médias */
+@media (min-width: 481px) and (max-width: 700px) {
+  .nav-pill {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .header-inner {
+    padding: 10px 16px;
+    min-height: 62px;
+  }
+}
+
+/* Garante que todos os elementos filhos diretos não excedam 100% */
+.app-layout,
+.search-float,
+.trust-strip,
+.form-card,
+.submit-area,
+.admin-content,
+.admin-card,
+.section-head,
+.tipo-grid,
+.modal-sheet {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* field-row: em telas muito estreitas, coluna única */
+@media (max-width: 360px) {
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+  .tipo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Admin search: em mobile, botão embaixo do input */
+@media (max-width: 480px) {
+  .admin-search {
+    flex-wrap: wrap;
+  }
+  .admin-search input {
+    width: 100%;
+  }
+  .btn-exportar {
+    width: 100%;
+  }
+}
+
+/* Garante que imagens e iframes não excedam o container */
+img, iframe, video {
+  max-width: 100%;
+  height: auto;
+}
+
+</style>
+</head>
+<body>
+
+<div id="public-app">
+
+<!-- ═══════════════════════════════════════
+     HEADER
+═══════════════════════════════════════ -->
+<header class="header">
+  <div class="header-inner">
+
+    <div class="header-brand">
+      <img src="logo.png" alt="Logo Licínio Resolve" class="brand-logo">
+
+      <div class="brand-text">
+        <h1>Licínio Resolve</h1>
+        <p>PREFEITURA DE LICÍNIO DE ALMEIDA</p>
+      </div>
+    </div>
+
+    <nav class="header-nav">
+      <button class="nav-pill active" onclick="switchNav(this,'nova')">
+        Nova Solicitação
+      </button>
+
+      <button class="nav-pill" onclick="switchNav(this,'ativas')">
+        Ativas
+      </button>
+
+      <button class="nav-pill" onclick="switchNav(this,'avisos')">
+        Avisos
+      </button>
+
+      <button class="nav-pill" onclick="switchNav(this,'sobre')">
+        Sobre
+      </button>
+    </nav>
+
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+  <div class="hero-dots"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-dot"></span>
+      Sistema ativo · 24h disponível
+    </div>
+    <h2>Sua cidade<br>ouve <em>você</em></h2>
+    <p class="hero-desc">Relate problemas urbanos, acompanhe o andamento e receba atualizações direto no seu WhatsApp.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num" id="stat-total">0</div>
+        <div class="hero-stat-label">Registradas</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num" id="stat-resolvidos">0</div>
+        <div class="hero-stat-label">Resolvidas</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">5d</div>
+        <div class="hero-stat-label">Prazo médio</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Floating search -->
+<div class="search-float" id="status-bar">
+  <div class="search-card">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="proto-input"
+      placeholder="Consultar protocolo (ex: #0412)"
+      inputmode="text" autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="search-btn" onclick="openTracking()">Consultar</button>
+  </div>
+</div>
+
+<!-- Trust strip -->
+<div class="trust-strip">
+  <div class="trust-chip"><span class="live-dot"></span> Sistema ativo</div>
+  <div class="trust-chip">🔒 LGPD</div>
+  <div class="trust-chip">📲 WhatsApp</div>
+  <div class="trust-chip">⚡ Resposta rápida</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     APP LAYOUT
+═══════════════════════════════════════ -->
+<div class="app-layout">
+
+  <!-- Sidebar (desktop) -->
+  <aside class="sidebar-nav" id="desktop-sidebar">
+    <button class="sidebar-item active" id="sb-nova" onclick="switchNav(this,'nova')">
+      <span class="sidebar-icon">📋</span> Nova Solicitação
+    </button>
+    <button class="sidebar-item" id="sb-ativas" onclick="switchNav(this,'ativas')">
+      <span class="sidebar-icon">📂</span> Solicitações Ativas
+    </button>
+    <button class="sidebar-item" id="sb-avisos" onclick="switchNav(this,'avisos')">
+      <span class="sidebar-icon">📢</span> Avisos
+    </button>
+    <div class="sidebar-divider"></div>
+    <button class="sidebar-item" id="sb-sobre" onclick="switchNav(this,'sobre')">
+      <span class="sidebar-icon">ℹ️</span> Sobre
+    </button>
+    <button class="sidebar-item" onclick="openTracking()">
+      <span class="sidebar-icon">🔍</span> Consultar Protocolo
+    </button>
+  </aside>
+
+  <!-- Content area -->
+  <main>
+
+    <!-- ═══ NOVA SOLICITAÇÃO ═══ -->
+    <div class="page-section active" id="section-nova">
+
+      <div class="section-head">
+        <div class="section-title">Nova Solicitação</div>
+        <div class="section-sub">Escolha o tipo de problema e preencha as informações abaixo.</div>
+      </div>
+
+      <!-- Tipo Grid -->
+      <div class="tipo-grid">
+        <div class="tipo-card" onclick="selectTipo(this,'buraco','🕳️','Buraco na via')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">🕳️</div>
+          <div class="tipo-label">Buraco na via</div>
+        </div>
+        <div class="tipo-card" onclick="selectTipo(this,'iluminacao','💡','Iluminação')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">💡</div>
+          <div class="tipo-label">Iluminação</div>
+        </div>
+        <div class="tipo-card" onclick="selectTipo(this,'lixo','🗑️','Lixo/Entulho')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">🗑️</div>
+          <div class="tipo-label">Lixo / Entulho</div>
+        </div>
+        <div class="tipo-card" onclick="selectTipo(this,'agua','💧','Água/Esgoto')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">💧</div>
+          <div class="tipo-label">Água / Esgoto</div>
+        </div>
+        <div class="tipo-card" onclick="selectTipo(this,'arvore','🌳','Árvore/Mato')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">🌳</div>
+          <div class="tipo-label">Árvore / Mato</div>
+        </div>
+        <div class="tipo-card" onclick="selectTipo(this,'calcada','🚶','Calçada')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">🚶</div>
+          <div class="tipo-label">Calçada</div>
+        </div>
+        <div class="tipo-card" onclick="selectTipo(this,'ambulancia','🚑','Ambulância')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">🚑</div>
+          <div class="tipo-label">Ambulância</div>
+        </div>
+        <div class="tipo-card urgente" onclick="selectTipo(this,'urgente','🚨','Urgência')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">🚨</div>
+          <div class="tipo-label">Urgência</div>
+        </div>
+        <div class="tipo-card" onclick="selectTipo(this,'praca','🏛️','Praça/Parque')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">🏛️</div>
+          <div class="tipo-label">Praça / Parque</div>
+        </div>
+        <div class="tipo-card" onclick="selectTipo(this,'sinalizacao','🚦','Sinalização')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">🚦</div>
+          <div class="tipo-label">Sinalização</div>
+        </div>
+        <div class="tipo-card" onclick="selectTipo(this,'animal','🐕','Animal')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">🐕</div>
+          <div class="tipo-label">Animal</div>
+        </div>
+        <div class="tipo-card" onclick="selectTipo(this,'outro','📌','Outro')">
+          <div class="tipo-check">✓</div>
+          <div class="tipo-emoji">📌</div>
+          <div class="tipo-label">Outro assunto</div>
+        </div>
+      </div>
+
+      <!-- Alert ambulância -->
+      <div id="ambulancia-alert">
+        <p style="font-size:14px;font-weight:800;color:var(--danger);margin-bottom:4px">🚨 Emergência médica?</p>
+        <p style="font-size:13px;color:#7F1D1D;line-height:1.65">Para risco de vida, ligue imediatamente para <strong>192 (SAMU)</strong> ou <strong>(77) 3252-1234</strong>. Este formulário é para solicitações não emergenciais.</p>
+      </div>
+
+      <!-- Foto -->
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="form-card-icon" style="background:#FFFBEB">📸</div>
+          <div>
+            <div class="fci-title">Foto do problema <span style="font-size:10px;color:var(--text2);font-weight:500">(opcional)</span></div>
+            <div class="fci-sub">Ajuda muito na identificação e resolução</div>
+          </div>
+        </div>
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('upload-input').click()">
+          <input type="file" id="upload-input" accept="image/*" multiple capture="environment" onchange="handleFiles(event)">
+          <span class="upload-icon">📷</span>
+          <div class="upload-title">Toque para tirar ou escolher foto</div>
+          <div class="upload-sub">Aceita até <strong>5 fotos</strong> · JPG, PNG</div>
+        </div>
+        <div class="photo-preview-grid" id="photo-grid" style="display:none"></div>
+      </div>
+
+      <!-- Localização -->
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="form-card-icon" style="background:var(--emerald3)">📍</div>
+          <div>
+            <div class="fci-title">Localização do problema <span class="req">*</span></div>
+            <div class="fci-sub">Onde está o problema?</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Rua / Avenida <span class="req">*</span></label>
+          <input type="text" id="campo-rua" placeholder="Ex: Rua das Acácias"
+            autocomplete="street-address" inputmode="text" oninput="updateSummary()">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Número</label>
+            <input type="text" id="campo-numero" placeholder="123 ou S/N" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label>Bairro</label>
+            <input type="text" id="campo-bairro" placeholder="Centro" oninput="updateSummary()">
+          </div>
+        </div>
+        <div class="field">
+          <label>Ponto de referência</label>
+          <input type="text" id="campo-ref" placeholder="Ex: Em frente ao mercado Souza">
+        </div>
+      </div>
+
+      <!-- Descrição -->
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="form-card-icon" style="background:#EFF6FF">📝</div>
+          <div>
+            <div class="fci-title">Descreva o problema</div>
+            <div class="fci-sub">Quanto mais detalhes, mais rápida a solução</div>
+          </div>
+        </div>
+        <div class="field">
+          <textarea id="descricao" placeholder="Descreva o que está acontecendo, há quanto tempo o problema existe, se já causou algum prejuízo..." oninput="countChars()" maxlength="600"></textarea>
+          <div class="char-counter"><span id="char-count">0</span>/600</div>
+        </div>
+      </div>
+
+      <!-- Prioridade -->
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="form-card-icon" style="background:#FEF2F2">⚡</div>
+          <div>
+            <div class="fci-title">Nível de urgência</div>
+            <div class="fci-sub">Como você classifica este problema?</div>
+          </div>
+        </div>
+        <div class="prioridade-btns">
+          <button class="prior-btn p-normal active" onclick="selectPrior(this,'normal')">
+            <span class="prior-emoji">🟢</span>
+            <span class="prior-label">Normal</span>
+          </button>
+          <button class="prior-btn p-alta" onclick="selectPrior(this,'alta')">
+            <span class="prior-emoji">🟡</span>
+            <span class="prior-label">Alta prioridade</span>
+          </button>
+          <button class="prior-btn p-urgente" onclick="selectPrior(this,'urgente')">
+            <span class="prior-emoji">🔴</span>
+            <span class="prior-label">Urgente</span>
+          </button>
+        </div>
+        <div class="sla-info" style="margin-top:12px;margin-bottom:0">
+          ⏱️ <span><b>Prazo de resposta:</b> Normal → 5 dias · Alta → 48h · Urgente → 24h</span>
+        </div>
+      </div>
+
+      <!-- Dados Pessoais -->
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="form-card-icon" style="background:#EDE9FE">👤</div>
+          <div>
+            <div class="fci-title">Seus dados</div>
+            <div class="fci-sub">Para enviar atualizações pelo WhatsApp</div>
+          </div>
+        </div>
+        <div id="dados-fields">
+          <div class="field">
+            <label>Nome completo <span class="req">*</span></label>
+            <input type="text" id="nome" placeholder="Seu nome completo"
+              autocomplete="name" autocapitalize="words" oninput="updateSummary()">
+          </div>
+          <div class="field">
+            <label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="whatsapp" placeholder="(77) 99999-9999"
+              inputmode="tel" autocomplete="tel" oninput="formatPhone(this)">
+            <div class="field-hint">📲 Você receberá atualizações da sua solicitação por WhatsApp</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Área de Envio -->
+      <div class="submit-area">
+        <div class="submit-summary" id="summary-box">
+          <div class="summary-title">📋 Resumo da solicitação</div>
+          <div class="summary-item"><span>📌</span><div><b>Tipo:</b><p id="s-tipo">—</p></div></div>
+          <div class="summary-item"><span>📍</span><div><b>Local:</b><p id="s-local">—</p></div></div>
+          <div class="summary-item"><span>👤</span><div><b>Nome:</b><p id="s-nome">—</p></div></div>
+        </div>
+        <button class="btn-submit" onclick="enviarSolicitacao()">
+          📤 Enviar Solicitação
+        </button>
+        <div class="terms-txt">Ao enviar, você concorda com os termos de uso.<br>Seus dados são protegidos pela <strong>LGPD</strong> (Lei 13.709/2018).</div>
+      </div>
+
+      <!-- Tela de Sucesso -->
+      <div class="success-screen" id="success-screen">
+        <div class="success-circle">✅</div>
+        <h2>Solicitação registrada!</h2>
+        <p>Sua solicitação foi salva com sucesso. Guarde o protocolo abaixo e confirme pelo WhatsApp para agilizar o atendimento.</p>
+        <div class="protocolo-box">
+          <div class="protocolo-label">Número do Protocolo</div>
+          <div class="protocolo-num" id="proto-gerado">#0000</div>
+        </div>
+        <div class="wpp-success-info" id="wpp-success-info" style="display:none"></div>
+        <div class="success-btns">
+          <button class="btn-track" onclick="openTrackingId(document.getElementById('proto-gerado').textContent)">🔍 Acompanhar</button>
+          <button class="btn-new" onclick="novasolicitacao()">➕ Nova solicitação</button>
+        </div>
+      </div>
+
+    </div><!-- /section-nova -->
+
+    <!-- ═══ SOLICITAÇÕES ATIVAS ═══ -->
+    <div class="page-section" id="section-ativas">
+      <div class="section-head">
+        <div class="section-title">Solicitações Ativas</div>
+        <div class="section-sub">Acompanhe o andamento das demandas registradas</div>
+      </div>
+      <div id="lista-ativas"></div>
+    </div>
+
+    <!-- ═══ AVISOS ═══ -->
+    <div class="page-section" id="section-avisos">
+      <div class="section-head">
+        <div class="section-title">Avisos e Comunicados</div>
+        <div class="section-sub">Informações oficiais da Prefeitura de Licínio de Almeida</div>
+      </div>
+      <div id="lista-avisos"></div>
+    </div>
+
+    <!-- ═══ SOBRE ═══ -->
+    <div class="page-section" id="section-sobre">
+      <div class="sobre-header">
+        <h3>🏙️ Cidade na Mão</h3>
+        <p>Plataforma digital de atendimento ao cidadão desenvolvida para modernizar a gestão municipal de Licínio de Almeida.</p>
+      </div>
+
+      <div class="beneficio-grid">
+        <div class="beneficio-card">
+          <div class="beneficio-num">100%</div>
+          <div class="beneficio-label">Digital e acessível pelo celular</div>
+        </div>
+        <div class="beneficio-card">
+          <div class="beneficio-num">24h</div>
+          <div class="beneficio-label">Disponível todos os dias</div>
+        </div>
+        <div class="beneficio-card">
+          <div class="beneficio-num">0</div>
+          <div class="beneficio-label">Filas ou deslocamentos</div>
+        </div>
+        <div class="beneficio-card">
+          <div class="beneficio-num">🔐</div>
+          <div class="beneficio-label">Seguro e em conformidade com a LGPD</div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--emerald3)">📱</div>
+        <div>
+          <div class="feature-title">Acesso universal</div>
+          <div class="feature-desc">Funciona em qualquer celular com navegador — sem instalar aplicativo. O cidadão acessa pelo link da prefeitura.</div>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#DBEAFE">📊</div>
+        <div>
+          <div class="feature-title">Painel administrativo completo</div>
+          <div class="feature-desc">A equipe da prefeitura acompanha todas as solicitações em tempo real, atualiza status e se comunica com o cidadão via WhatsApp.</div>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#FFFBEB">💬</div>
+        <div>
+          <div class="feature-title">WhatsApp integrado</div>
+          <div class="feature-desc">Notificações automáticas ao cidadão quando a solicitação é recebida, em andamento e concluída. Comunicação direta e transparente.</div>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--danger-lt)">🚨</div>
+        <div>
+          <div class="feature-title">Gestão de urgências</div>
+          <div class="feature-desc">Solicitações urgentes recebem destaque no painel e alertas especiais para a equipe. SLA configurável por tipo de ocorrência.</div>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#EDE9FE">📋</div>
+        <div>
+          <div class="feature-title">Protocolo e rastreamento</div>
+          <div class="feature-desc">Cada solicitação gera um número de protocolo único. O cidadão pode consultar o status a qualquer momento, com total transparência.</div>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#F0FDF4">📢</div>
+        <div>
+          <div class="feature-title">Comunicados oficiais</div>
+          <div class="feature-desc">A prefeitura publica avisos diretamente no app: obras, interrupções de serviço, eventos e comunicados importantes.</div>
+        </div>
+      </div>
+
+      <div class="cta-prefeito">
+        <h4>Quer implantar na sua cidade?</h4>
+        <p>Entre em contato para saber mais sobre a plataforma Cidade na Mão e como ela pode transformar o atendimento ao cidadão do seu município.</p>
+        <button class="btn-wpp-cta" onclick="window.open('https://wa.me/5577999999999?text=Olá! Tenho interesse na plataforma Cidade na Mão para o meu município.','_blank')">
+          💬 Falar pelo WhatsApp
+        </button>
+      </div>
+
+      <div style="background:#fff;border-radius:var(--r-sm);padding:18px;border:1.5px solid rgba(0,0,0,0.05);box-shadow:var(--sh-xs);text-align:center">
+        <p style="font-size:12px;color:var(--text2);line-height:1.8">
+          <strong style="color:var(--text)">Prefeitura de Licínio de Almeida</strong><br>
+          CNPJ 14.105.183/0001-57 · Estado da Bahia<br>
+          Cidade na Mão — Plataforma de Atendimento ao Cidadão<br>
+          <span style="font-size:10.5px;color:var(--text3)">Versão 2.0 · Maio/2026</span>
+        </p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Footer -->
+<footer class="footer-gov">
+  <strong>Prefeitura Municipal de Licínio de Almeida</strong><br>
+  CNPJ 12.345.678/0001-01 · Bahia · Brasil<br>
+  <span style="font-size:10px;opacity:0.6">Plataforma fornecida por <strong style="color:rgba(255,255,255,0.5)"> · Dhonatan Aymar</strong> </span>
+  <div class="footer-links">
+    <a href="#" onclick="switchNav(null,'sobre');return false">Sobre o sistema</a>
+    <a href="#" onclick="openTracking();return false">Consultar protocolo</a>
+    <a href="#" onclick="switchNav(null,'avisos');return false">Avisos</a>
+    <a href="#" onclick="abrirModalDoc('lgpd');return false">Privacidade · LGPD</a>
+    <a href="#" onclick="abrirModalDoc('termos');return false">Termos de Uso</a>
+    <a href="#" onclick="abrirModalDoc('acessibilidade');return false">Acessibilidade</a>
+  </div>
+</footer>
+
+<div class="bottom-spacer"></div>
+
+<!-- Bottom Nav (mobile) -->
+<nav class="bottom-nav">
+  <button class="bnav-item" id="bnav-nova" onclick="switchNav(null,'nova')">
+    <span class="bnav-icon">📋</span>
+    <span class="bnav-label">Solicitar</span>
+  </button>
+  <button class="bnav-item" id="bnav-ativas" onclick="switchNav(null,'ativas')">
+    <span class="bnav-icon">📂</span>
+    <span class="bnav-label">Ativas</span>
+  </button>
+  <button class="bnav-item bnav-center" id="bnav-nova2" onclick="switchNav(null,'nova')">
+    <div class="bnav-icon-big">➕</div>
+    <span class="bnav-label" style="margin-top:4px;font-size:9px">Nova</span>
+  </button>
+  <button class="bnav-item" id="bnav-avisos" onclick="switchNav(null,'avisos')">
+    <span class="bnav-icon">📢</span>
+    <span class="bnav-label">Avisos</span>
+  </button>
+  <button class="bnav-item" id="bnav-track" onclick="openTracking()">
+    <span class="bnav-icon">🔍</span>
+    <span class="bnav-label">Protocolo</span>
+  </button>
+</nav>
+
+</div><!-- /public-app -->
+
+<!-- ═══════════════════════════════════════
+     MODAL TRACKING
+═══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-track" onclick="closeTrackingIfOutside(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔍 Consultar Protocolo</div>
+    <div id="track-search-field">
+      <div class="field">
+        <input type="text" id="track-proto-input"
+          placeholder="Ex: #0412 ou apenas 0412"
+          style="font-size:16px;font-weight:700;letter-spacing:1px"
+          inputmode="text" autocomplete="off"
+          onkeydown="if(event.key==='Enter'){this.blur();buscarProtocolo();}">
+      </div>
+      <button class="btn-submit" style="margin-bottom:0" onclick="buscarProtocolo()">Buscar</button>
+    </div>
+    <div class="tracking-result" id="track-result">
+      <div class="track-header">
+        <div style="font-size:30px" id="track-emoji">🕳️</div>
+        <div>
+          <div class="track-id" id="tr-id">#0412</div>
+          <div class="track-tipo" id="tr-tipo">Buraco na via — Rua Principal</div>
+          <div style="margin-top:8px" id="tr-status-badge"></div>
+        </div>
+      </div>
+      <div class="detalhe-progresso">
+        <div class="progresso-label">Andamento geral</div>
+        <div class="progresso-bar"><div class="progresso-fill" id="tr-progresso" style="width:50%"></div></div>
+        <div class="progresso-pct" id="tr-pct">50%</div>
+      </div>
+      <div class="detalhe-obs" id="tr-obs-box" style="display:none">
+        <div class="detalhe-obs-label">📝 Observação da equipe</div>
+        <p id="tr-obs-texto"></p>
+      </div>
+      <div class="timeline" id="track-timeline"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL DETALHE
+═══════════════════════════════════════ -->
+<div class="modal-overlay modal-detalhe" id="modal-detalhe" onclick="closeDetalheIfOutside(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div id="detalhe-content"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ADMIN PANEL
+═══════════════════════════════════════ -->
+<div id="admin-app" class="admin-page">
+
+  <!-- Login -->
+  <div id="admin-login-screen" class="admin-login">
+    <div class="admin-login-card">
+      <div class="admin-login-logo">
+        <div class="brand-icon-big">🏛️</div>
+        <h2>Painel Administrativo</h2>
+        <p>Cidade na Mão · Prefeitura de Licínio de Almeida</p>
+      </div>
+      <div class="admin-login-error" id="login-error">E-mail ou senha incorretos.</div>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="admin-user" placeholder="seu@email.com"
+          autocomplete="username" inputmode="email">
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" id="admin-pass" placeholder="••••••••"
+          autocomplete="current-password"
+          onkeydown="if(event.key==='Enter'){this.blur();fazerLogin();}">
+      </div>
+      <button class="admin-login-btn" id="btn-login" onclick="fazerLogin()">🔐 Entrar no Painel</button>
+      <div style="text-align:center;margin-top:16px">
+        <button onclick="voltarPublico()"
+          style="background:none;border:none;font-size:13px;color:var(--text2);cursor:pointer;font-family:var(--font-body);padding:10px;min-height:44px;touch-action:manipulation;font-weight:600">
+          ← Voltar ao site público
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Painel Logado -->
+  <div id="admin-painel" style="display:none">
+
+    <div class="admin-header">
+      <div>
+        <h1>🏛️ Painel Administrativo</h1>
+        <p>Cidade na Mão · Licínio de Almeida · <span id="admin-hora"></span></p>
+        <p style="font-size:11px;opacity:0.6;margin-top:1px">👤 <span id="admin-email-logado"></span></p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button onclick="voltarPublico()" class="admin-logout" style="background:rgba(255,255,255,0.07)">🏠</button>
+        <button onclick="fazerLogout()" class="admin-logout">Sair</button>
+      </div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('dashboard')" id="atab-dashboard">📊 Dashboard</button>
+      <button class="admin-tab" onclick="switchAdminTab('solicitacoes')" id="atab-solicitacoes">
+        📋 Solicitações <span class="tab-badge" id="badge-total">0</span>
+      </button>
+      <button class="admin-tab" onclick="switchAdminTab('urgentes')" id="atab-urgentes">
+        🚨 Urgentes <span class="tab-badge urgente" id="badge-urgente">0</span>
+      </button>
+      <button class="admin-tab" onclick="switchAdminTab('relatorios')" id="atab-relatorios">📈 Relatórios</button>
+      <button class="admin-tab" onclick="switchAdminTab('avisos')" id="atab-avisos">📢 Avisos</button>
+      <button class="admin-tab" onclick="switchAdminTab('config')" id="atab-config">⚙️ Config</button>
+      <button class="admin-tab" onclick="switchAdminTab('log')" id="atab-log">📜 Auditoria</button>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- Dashboard -->
+      <div class="admin-tab-content active" id="atc-dashboard">
+
+        <!-- KPIs principais -->
+        <div class="admin-stats" id="admin-stats"></div>
+
+        <!-- Linha 2: Taxa de resolução + Urgências -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px" id="dashboard-row2">
+          <div class="taxa-card" id="taxa-card"></div>
+          <div class="taxa-card" id="sla-card"></div>
+        </div>
+
+        <!-- Por tipo -->
+        <div class="admin-section-title">📊 Distribuição por tipo</div>
+        <div id="chart-tipos" style="margin-bottom:20px"></div>
+
+        <!-- Por bairro -->
+        <div class="admin-section-title">📍 Por localidade</div>
+        <div id="chart-bairros" style="margin-bottom:20px"></div>
+
+        <!-- Recentes -->
+        <div class="admin-section-title">🕐 Últimas 5 solicitações</div>
+        <div id="admin-recentes"></div>
+      </div>
+
+      <!-- Todas Solicitações -->
+      <div class="admin-tab-content" id="atc-solicitacoes">
+        <div class="admin-search">
+          <input type="text" id="admin-busca"
+            placeholder="🔍 Buscar por nome, bairro, protocolo, tipo..."
+            oninput="buscarAdmin()">
+          <button class="btn-exportar" onclick="exportarCSV()">📥 CSV</button>
+        </div>
+        <!-- Ordenação -->
+        <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap">
+          <span style="font-size:11px;font-weight:700;color:var(--text2)">Ordenar:</span>
+          <select id="admin-ordem" onchange="renderAdminLista(filtroAtual)"
+            style="padding:6px 10px;border:1.5px solid var(--surface2);border-radius:var(--r-sm);font-size:12px;font-family:var(--font-body);font-weight:600;background:#fff;color:var(--text);outline:none">
+            <option value="recente">Mais recente</option>
+            <option value="urgente">Urgentes primeiro</option>
+            <option value="antigo">Mais antigo</option>
+          </select>
+        </div>
+        <div class="admin-filtros">
+          <button class="filtro-btn active" onclick="filtrarAdmin(this,'todos')">Todos</button>
+          <button class="filtro-btn" onclick="filtrarAdmin(this,'aberto')">🔵 Abertos</button>
+          <button class="filtro-btn" onclick="filtrarAdmin(this,'andamento')">🟡 Em andamento</button>
+          <button class="filtro-btn" onclick="filtrarAdmin(this,'urgente')">🔴 Urgentes</button>
+          <button class="filtro-btn" onclick="filtrarAdmin(this,'resolvido')">🟢 Resolvidos</button>
+        </div>
+        <div id="admin-lista-solicit"></div>
+      </div>
+
+      <!-- Urgentes -->
+      <div class="admin-tab-content" id="atc-urgentes">
+        <div style="background:var(--danger-lt);border:1.5px solid rgba(229,57,53,0.3);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+          <span style="font-size:24px">🚨</span>
+          <div>
+            <div style="font-size:13px;font-weight:800;color:var(--danger)">Atenção — Demandas Urgentes</div>
+            <div style="font-size:11.5px;color:#7F1D1D;margin-top:2px">Estas solicitações requerem resposta em até 24 horas. Priorize o atendimento.</div>
+          </div>
+        </div>
+        <div id="admin-lista-urgentes"></div>
+      </div>
+
+      <!-- Relatórios -->
+      <div class="admin-tab-content" id="atc-relatorios">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-family:var(--font-disp);font-size:16px;font-weight:800;color:var(--text)">📈 Relatório Geral</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:3px">Análise completa das solicitações registradas</div>
+          </div>
+          <button class="btn-exportar" onclick="exportarCSV()" style="background:var(--emerald2)">📥 Exportar CSV completo</button>
+        </div>
+
+        <!-- Resumo executivo -->
+        <div style="background:linear-gradient(135deg,var(--navy2) 0%,var(--navy3) 100%);border-radius:var(--r-sm);padding:20px;margin-bottom:16px;color:#fff">
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.5);margin-bottom:14px">RESUMO EXECUTIVO</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="rel-exec"></div>
+        </div>
+
+        <!-- Por tipo detalhado -->
+        <div class="admin-section-title">📊 Volume por tipo de problema</div>
+        <div id="rel-tipos" style="margin-bottom:20px"></div>
+
+        <!-- Por status detalhado -->
+        <div class="admin-section-title">🔄 Distribuição por status</div>
+        <div id="rel-status" style="margin-bottom:20px"></div>
+
+        <!-- Por prioridade -->
+        <div class="admin-section-title">⚡ Distribuição por prioridade</div>
+        <div id="rel-prioridade" style="margin-bottom:20px"></div>
+
+        <!-- Por localidade -->
+        <div class="admin-section-title">📍 Top localidades com mais ocorrências</div>
+        <div id="rel-locais" style="margin-bottom:20px"></div>
+
+        <!-- Anonimato -->
+        <div class="admin-section-title">👤 Identificação dos cidadãos</div>
+        <div id="rel-anonimo" style="margin-bottom:20px"></div>
+
+        <!-- Relatório por Lugar -->
+        <div class="admin-section-title">📍 Relatório por Localidade</div>
+        <div style="background:#fff;border-radius:var(--r-sm);padding:18px;border:1.5px solid rgba(0,0,0,0.05);box-shadow:var(--sh-xs);margin-bottom:16px">
+          <div style="font-size:12px;color:var(--text2);margin-bottom:12px">Selecione um bairro/localidade para gerar um relatório de impressão com todas as demandas daquele local.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+            <div style="flex:1;min-width:180px">
+              <label style="font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:6px">Localidade</label>
+              <select id="rel-lugar-select" style="width:100%;padding:12px 14px;border:2px solid var(--surface2);border-radius:var(--r-sm);font-size:14px;font-family:var(--font-body);font-weight:600;background:var(--surface);color:var(--text);outline:none;-webkit-appearance:none;appearance:none">
+                <option value="">— Selecione um lugar —</option>
+              </select>
+            </div>
+            <button onclick="gerarRelatorioLugar()" style="padding:12px 20px;background:var(--navy);color:#fff;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font-body);min-height:48px;white-space:nowrap;touch-action:manipulation">
+              🔍 Ver demandas
+            </button>
+            <button onclick="imprimirRelatorioLugar()" id="btn-imprimir-lugar" style="display:none;padding:12px 20px;background:var(--emerald2);color:#fff;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font-body);min-height:48px;white-space:nowrap;touch-action:manipulation">
+              🖨️ Imprimir
+            </button>
+          </div>
+        </div>
+        <div id="rel-lugar-resultado"></div>
+      </div>
+
+      <!-- Avisos Admin -->
+      <div class="admin-tab-content" id="atc-avisos">
+        <div class="admin-section-title">➕ Publicar novo aviso</div>
+        <div class="aviso-form-card">
+          <div class="field-row" style="margin-bottom:12px">
+            <div class="field" style="margin-bottom:0">
+              <label>Emoji</label>
+              <input type="text" id="aviso-emoji" value="📢" maxlength="4"
+                style="font-size:22px;text-align:center">
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Título <span class="req">*</span></label>
+              <input type="text" id="aviso-titulo" placeholder="Título do comunicado">
+            </div>
+          </div>
+          <div class="field">
+            <label>Mensagem <span class="req">*</span></label>
+            <textarea id="aviso-corpo" placeholder="Texto do comunicado para os cidadãos..." style="min-height:100px"></textarea>
+          </div>
+          <button class="btn-submit" style="margin-top:4px" onclick="publicarAviso()">📢 Publicar Aviso</button>
+        </div>
+        <div class="admin-section-title">📋 Avisos publicados</div>
+        <div id="admin-lista-avisos"></div>
+      </div>
+
+      <!-- Config -->
+      <div class="admin-tab-content" id="atc-config">
+        <div class="admin-section-title">⚙️ Configurações do sistema</div>
+        <div class="config-card">
+          <div class="config-row">
+            <div>
+              <div class="config-label">Notificações WhatsApp</div>
+              <div class="config-sub">Enviar mensagens automáticas ao cidadão</div>
+            </div>
+            <div class="toggle-switch on" onclick="toggleConfig(this)"><div class="toggle-knob"></div></div>
+          </div>
+          <div class="config-row">
+            <div>
+              <div class="config-label">GPS automático</div>
+              <div class="config-sub">Solicitar localização ao cidadão</div>
+            </div>
+            <div class="toggle-switch on" onclick="toggleConfig(this)"><div class="toggle-knob"></div></div>
+          </div>
+          <div class="config-row">
+            <div>
+              <div class="config-label">Upload de fotos</div>
+              <div class="config-sub">Permitir envio de imagens pelo cidadão</div>
+            </div>
+            <div class="toggle-switch on" onclick="toggleConfig(this)"><div class="toggle-knob"></div></div>
+          </div>
+        </div>
+
+        <div class="admin-section-title">📋 SLA por tipo de urgência</div>
+        <div class="config-card">
+          <div class="config-row">
+            <div><div class="config-label">🟢 Normal</div><div class="config-sub">Prazo de resposta padrão</div></div>
+            <span style="font-size:13px;font-weight:800;color:var(--emerald2)">5 dias úteis</span>
+          </div>
+          <div class="config-row">
+            <div><div class="config-label">🟡 Alta prioridade</div><div class="config-sub">Atendimento prioritário</div></div>
+            <span style="font-size:13px;font-weight:800;color:var(--amber2)">48 horas</span>
+          </div>
+          <div class="config-row">
+            <div><div class="config-label">🔴 Urgente</div><div class="config-sub">Resposta imediata</div></div>
+            <span style="font-size:13px;font-weight:800;color:var(--danger)">24 horas</span>
+          </div>
+        </div>
+
+        <div class="admin-section-title">📌 Informações do sistema</div>
+        <div class="config-card">
+          <div class="config-row">
+            <div><div class="config-label">Versão</div></div>
+            <span style="font-size:13px;color:var(--text2);font-weight:700">2.0 — Maio/2026</span>
+          </div>
+          <div class="config-row">
+            <div><div class="config-label">Município</div></div>
+            <span style="font-size:13px;color:var(--text2);font-weight:700">Licínio de Almeida / BA</span>
+          </div>
+          <div class="config-row">
+            <div><div class="config-label">CNPJ</div></div>
+            <span style="font-size:13px;color:var(--text2);font-weight:700">14.105.183/0001-57</span>
+          </div>
+          <div class="config-row">
+            <div><div class="config-label">Plataforma</div></div>
+            <span style="font-size:13px;color:var(--text2);font-weight:700">Cidade na Mão v2.0</span>
+          </div>
+          <div class="config-row">
+            <div><div class="config-label">Fornecedor</div><div class="config-sub">Desenvolvedor da plataforma</div></div>
+            <span style="font-size:13px;color:var(--text2);font-weight:700">Dhonatan Aymar</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Auditoria / Log -->
+      <div class="admin-tab-content" id="atc-log">
+        <div class="admin-section-title">📜 Histórico de ações administrativas</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:16px">Registro de todas as alterações feitas pelo painel. Quem mudou o quê e quando.</div>
+        <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button onclick="filtrarLog('todos')" id="log-btn-todos" style="padding:6px 14px;border-radius:100px;border:1.5px solid var(--navy);background:var(--navy);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation">Todos</button>
+          <button onclick="filtrarLog('status')" id="log-btn-status" style="padding:6px 14px;border-radius:100px;border:1.5px solid var(--surface2);background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation">Status</button>
+          <button onclick="filtrarLog('excluiu')" id="log-btn-excluiu" style="padding:6px 14px;border-radius:100px;border:1.5px solid var(--surface2);background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation">Exclusões</button>
+          <button onclick="filtrarLog('obs')" id="log-btn-obs" style="padding:6px 14px;border-radius:100px;border:1.5px solid var(--surface2);background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation">Observações</button>
+        </div>
+        <div id="admin-log-lista" style="background:#fff;border-radius:var(--r-sm);padding:0 16px;border:1.5px solid rgba(0,0,0,0.05);box-shadow:var(--sh-xs)">
+          <p style="color:var(--text3);font-size:13px;padding:24px 0;text-align:center">Carregando histórico…</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /admin-app -->
+
+<!-- Botão Admin -->
+<button id="btn-ir-admin" onclick="irParaAdmin()" title="Acesso Administrativo">🔐</button>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ═══ MODAL LGPD / PRIVACIDADE ═══ -->
+<div id="modal-lgpd" class="modal-doc" onclick="if(event.target===this)fecharModalDoc('lgpd')">
+  <div class="modal-doc-sheet">
+    <div class="modal-doc-header">
+      <span class="modal-doc-title">🔒 Política de Privacidade</span>
+      <button class="modal-doc-close" onclick="fecharModalDoc('lgpd')">✕</button>
+    </div>
+    <div class="modal-doc-body">
+      <span class="modal-doc-badge">LGPD — Lei 13.709/2018</span>
+      <h3>1. Quem somos</h3>
+      <p>A Prefeitura Municipal de Licínio de Almeida, CNPJ 14.105.183/0001-57, é a controladora dos dados coletados por esta plataforma. A operação técnica é realizada pela plataforma Cidade na Mão (Dhonatan Aymar).</p>
+      <h3>2. Dados que coletamos</h3>
+      <ul>
+        <li><strong>Nome completo</strong> — para identificação da solicitação</li>
+        <li><strong>Número de WhatsApp</strong> — para envio de notificações sobre sua solicitação</li>
+        <li><strong>Endereço/localização</strong> — para identificar onde o problema ocorre</li>
+        <li><strong>Descrição e fotos</strong> — para detalhar o problema relatado</li>
+      </ul>
+      <h3>3. Finalidade do uso</h3>
+      <p>Os dados coletados são utilizados exclusivamente para: registrar e acompanhar sua solicitação, comunicar atualizações de status via WhatsApp e produzir estatísticas anônimas de atendimento municipal.</p>
+      <h3>4. Base legal (LGPD, art. 7º)</h3>
+      <p>O tratamento dos dados é fundamentado no <strong>exercício de políticas públicas</strong> (art. 7º, III) e no <strong>legítimo interesse</strong> da administração municipal em prestar serviços ao cidadão (art. 7º, IX).</p>
+      <h3>5. Compartilhamento</h3>
+      <p>Seus dados <strong>não são vendidos ou compartilhados</strong> com terceiros para fins comerciais. Podem ser acessados por servidores municipais responsáveis pelo atendimento das solicitações.</p>
+      <h3>6. Retenção</h3>
+      <p>Os dados são mantidos pelo prazo mínimo exigido pela legislação municipal (Lei de Arquivos) e podem ser solicitados para fins de transparência pública.</p>
+      <h3>7. Seus direitos</h3>
+      <p>Você tem direito a: acessar seus dados, corrigir informações incorretas, solicitar a exclusão (quando não houver obrigação legal de guarda) e revogar o consentimento. Para exercer esses direitos, entre em contato pela Ouvidoria Municipal.</p>
+      <h3>8. Segurança</h3>
+      <p>Os dados são armazenados no Firebase (Google Cloud), com criptografia em trânsito (TLS) e em repouso. O acesso ao painel administrativo é protegido por autenticação Firebase Auth.</p>
+      <h3>9. Contato</h3>
+      <p>Encarregado de Dados (DPO): Secretaria de Administração da Prefeitura de Licínio de Almeida. Rua da Prefeitura, s/n — Centro, Licínio de Almeida/BA.</p>
+      <p style="font-size:11px;color:var(--text3);margin-top:20px">Última atualização: maio de 2026.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL TERMOS DE USO ═══ -->
+<div id="modal-termos" class="modal-doc" onclick="if(event.target===this)fecharModalDoc('termos')">
+  <div class="modal-doc-sheet">
+    <div class="modal-doc-header">
+      <span class="modal-doc-title">📄 Termos de Uso</span>
+      <button class="modal-doc-close" onclick="fecharModalDoc('termos')">✕</button>
+    </div>
+    <div class="modal-doc-body">
+      <span class="modal-doc-badge">Versão 1.0 — Maio/2026</span>
+      <h3>1. Aceitação</h3>
+      <p>Ao utilizar a plataforma Licínio Resolve, você concorda com estes Termos de Uso. Se não concordar, não utilize o serviço.</p>
+      <h3>2. Descrição do serviço</h3>
+      <p>O Licínio Resolve é uma plataforma digital da Prefeitura de Licínio de Almeida para registro, acompanhamento e resolução de solicitações de serviços públicos pelos cidadãos.</p>
+      <h3>3. Uso adequado</h3>
+      <p>O cidadão se compromete a:</p>
+      <ul>
+        <li>Fornecer informações verídicas e precisas</li>
+        <li>Utilizar a plataforma apenas para relatar problemas reais de interesse público</li>
+        <li>Não enviar conteúdo ofensivo, falso ou que viole direitos de terceiros</li>
+        <li>Não sobrecarregar o sistema com solicitações duplicadas ou de má-fé</li>
+      </ul>
+      <h3>4. Prazo de atendimento (SLA)</h3>
+      <p>A Prefeitura se compromete a responder as solicitações nos seguintes prazos: <strong>Normal:</strong> até 5 dias úteis · <strong>Alta prioridade:</strong> até 48 horas · <strong>Urgente:</strong> até 24 horas. Esses prazos são para a resposta inicial e não garantem a resolução completa do problema.</p>
+      <h3>5. Limitações</h3>
+      <p>A plataforma não substitui serviços de emergência. Para situações de risco imediato à vida, ligue <strong>192</strong> (SAMU), <strong>193</strong> (Bombeiros) ou <strong>190</strong> (Polícia).</p>
+      <h3>6. Disponibilidade</h3>
+      <p>A Prefeitura não garante disponibilidade ininterrupta do sistema e não se responsabiliza por falhas temporárias de acesso decorrentes de manutenção ou problemas técnicos.</p>
+      <h3>7. Modificações</h3>
+      <p>Estes termos podem ser atualizados a qualquer momento. A versão vigente estará sempre disponível nesta plataforma.</p>
+      <p style="font-size:11px;color:var(--text3);margin-top:20px">Última atualização: maio de 2026.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL ACESSIBILIDADE ═══ -->
+<div id="modal-acessibilidade" class="modal-doc" onclick="if(event.target===this)fecharModalDoc('acessibilidade')">
+  <div class="modal-doc-sheet">
+    <div class="modal-doc-header">
+      <span class="modal-doc-title">♿ Declaração de Acessibilidade</span>
+      <button class="modal-doc-close" onclick="fecharModalDoc('acessibilidade')">✕</button>
+    </div>
+    <div class="modal-doc-body">
+      <span class="modal-doc-badge">Lei Brasileira de Inclusão — Lei 13.146/2015</span>
+      <h3>Compromisso com a acessibilidade</h3>
+      <p>A Prefeitura de Licínio de Almeida está comprometida em garantir que a plataforma Licínio Resolve seja acessível a todas as pessoas, incluindo aquelas com deficiência, em conformidade com a <strong>Lei Brasileira de Inclusão (LBI)</strong> e o <strong>Modelo de Acessibilidade em Governo Eletrônico (eMAG)</strong>.</p>
+      <h3>Recursos implementados</h3>
+      <ul>
+        <li>✅ Interface responsiva — funciona em celulares, tablets e computadores</li>
+        <li>✅ Textos com contraste adequado (WCAG 2.1 nível AA)</li>
+        <li>✅ Elementos interativos com área de toque mínima de 44×44px</li>
+        <li>✅ Textos alternativos nos elementos visuais principais</li>
+        <li>✅ Formulários com labels e mensagens de erro claras</li>
+        <li>✅ Suporte a zoom até 200% sem perda de funcionalidade</li>
+        <li>✅ Compatível com leitores de tela (NVDA, VoiceOver)</li>
+        <li>✅ Linguagem simples e direta (nível de leitura acessível)</li>
+      </ul>
+      <h3>Limitações conhecidas</h3>
+      <ul>
+        <li>⚠️ Algumas fotos enviadas por cidadãos podem não ter descrição alternativa</li>
+        <li>⚠️ O recurso de mapa GPS depende do suporte do navegador</li>
+      </ul>
+      <h3>Alternativas de acesso</h3>
+      <p>Cidadãos com dificuldades no acesso digital podem registrar solicitações presencialmente na sede da Prefeitura ou pelo WhatsApp oficial do município.</p>
+      <h3>Feedback e contato</h3>
+      <p>Encontrou uma barreira de acessibilidade? Informe-nos para que possamos melhorar. Entre em contato pela Ouvidoria Municipal ou pelo WhatsApp da Prefeitura.</p>
+      <p style="font-size:11px;color:var(--text3);margin-top:20px">Declaração revisada em maio de 2026 · eMAG 3.1</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FIREBASE SDK
+═══════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+<script>
+/* =========================================================
+   FIREBASE — INICIALIZAÇÃO
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyANjF3duN_D7WCRxaM0vIY1hES3uKd60l4",
+  authDomain: "licinio-resolve.firebaseapp.com",
+  projectId: "licinio-resolve",
+  storageBucket: "licinio-resolve.firebasestorage.app",
+  messagingSenderId: "298938773914",
+  appId: "1:298938773914:web:3807b984bd3363cf9a8a23",
+  measurementId: "G-B28R2ELHNY"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* =========================================================
+   ESTADO GLOBAL
+   ========================================================= */
+let tipoSelecionado = null;
+let prioridadeSelecionada = 'normal';
+let fotos = [];
+let locType = null;
+let adminLogado = false;
+let adminEmailAtual = '';
+let filtroAtual = 'todos';
+let buscaAtual = '';
+let _logFiltroAtual = 'todos';
+
+/* =========================================================
+   SEGURANÇA — PERSISTÊNCIA DE SESSÃO (Firebase Auth)
+   ========================================================= */
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    adminLogado = true;
+    adminEmailAtual = user.email;
+    document.getElementById('admin-login-screen').style.display = 'none';
+    document.getElementById('admin-painel').style.display = 'block';
+    document.getElementById('admin-email-logado').textContent = user.email;
+    updateAdminHora();
+    setInterval(updateAdminHora, 60000);
+    renderAdmin();
+    renderLogAuditoria();
+  } else {
+    adminLogado = false;
+    adminEmailAtual = '';
+    document.getElementById('admin-painel').style.display = 'none';
+    document.getElementById('admin-login-screen').style.display = 'flex';
+  }
+});
+
+/* =========================================================
+   DADOS — FIRESTORE (tempo real)
+   ========================================================= */
+let solicitacoes = [];
+let avisos = [];
+
+db.collection('solicitacoes').orderBy('_ts','desc').onSnapshot(snapshot => {
+  solicitacoes = snapshot.docs.map(doc => ({ _docId: doc.id, ...doc.data() }));
+  updateHeroStats();
+  if (document.getElementById('section-ativas').classList.contains('active')) renderAtivas();
+  if (adminLogado) renderAdmin();
+}, err => console.error('Erro ao carregar solicitações:', err));
+
+db.collection('avisos').orderBy('_ts','desc').onSnapshot(snapshot => {
+  avisos = snapshot.docs.map(doc => ({ _docId: doc.id, ...doc.data() }));
+  if (document.getElementById('section-avisos').classList.contains('active')) renderAvisosPublico();
+  if (adminLogado) renderAdminAvisos();
+}, err => console.error('Erro ao carregar avisos:', err));
+
+/* =========================================================
+   NAV PÚBLICA
+   ========================================================= */
+function switchNav(btnEl, section) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + section).classList.add('active');
+  document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+
+  if (btnEl) btnEl.classList.add('active');
+  else {
+    const map = { nova: 0, ativas: 1, avisos: 2, sobre: 3 };
+    if (map[section] !== undefined) document.querySelectorAll('.nav-pill')[map[section]].classList.add('active');
+  }
+
+  const bnavMap = { nova: 'bnav-nova', ativas: 'bnav-ativas', avisos: 'bnav-avisos' };
+  if (bnavMap[section]) document.getElementById(bnavMap[section]).classList.add('active');
+
+  const sbMap = { nova: 'sb-nova', ativas: 'sb-ativas', avisos: 'sb-avisos', sobre: 'sb-sobre' };
+  if (sbMap[section]) { const el = document.getElementById(sbMap[section]); if (el) el.classList.add('active'); }
+
+  if (section === 'ativas') renderAtivas();
+  if (section === 'avisos') renderAvisosPublico();
+  updateHeroStats();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =========================================================
+   HERO STATS
+   ========================================================= */
+function updateHeroStats() {
+  document.getElementById('stat-total').textContent = solicitacoes.length;
+  document.getElementById('stat-resolvidos').textContent = solicitacoes.filter(s => s.status === 'resolvido').length;
+}
+
+/* =========================================================
+   TIPO
+   ========================================================= */
+function selectTipo(el, key, emoji, label) {
+  document.querySelectorAll('.tipo-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  tipoSelecionado = { key, emoji, label };
+  document.getElementById('s-tipo').textContent = emoji + ' ' + label;
+  document.getElementById('summary-box').classList.add('show');
+  document.getElementById('ambulancia-alert').style.display = (key === 'ambulancia') ? 'block' : 'none';
+  updateSummary();
+  if (navigator.vibrate) navigator.vibrate(30);
+}
+
+/* =========================================================
+   FOTOS
+   ========================================================= */
+function handleFiles(e) {
+  Array.from(e.target.files).forEach(f => {
+    if (fotos.length >= 5) return;
+    const reader = new FileReader();
+    reader.onload = ev => { fotos.push({ name: f.name, url: ev.target.result }); renderPhotos(); };
+    reader.readAsDataURL(f);
+  });
+  e.target.value = '';
+}
+function renderPhotos() {
+  const grid = document.getElementById('photo-grid');
+  const zone = document.getElementById('upload-zone');
+  grid.style.display = fotos.length ? 'grid' : 'none';
+  zone.style.display = fotos.length >= 5 ? 'none' : 'block';
+  if (fotos.length) zone.classList.add('has-file');
+  grid.innerHTML = fotos.map((f, i) => `
+    <div class="photo-thumb">
+      <img src="${f.url}" alt="foto ${i+1}">
+      <button class="photo-remove" onclick="removePhoto(${i})">✕</button>
+    </div>
+  `).join('');
+  if (fotos.length < 5) {
+    grid.innerHTML += `<div class="add-more-btn" onclick="document.getElementById('upload-input').click()"><span>➕</span><span>Adicionar</span></div>`;
+  }
+}
+function removePhoto(i) {
+  fotos.splice(i, 1);
+  renderPhotos();
+  if (!fotos.length) {
+    document.getElementById('upload-zone').style.display = 'block';
+    document.getElementById('upload-zone').classList.remove('has-file');
+  }
+}
+
+/* =========================================================
+   GPS
+   ========================================================= */
+function usarGPS() {
+  document.getElementById('loc-gps').classList.add('active');
+  document.getElementById('loc-manual').classList.remove('active');
+  document.getElementById('manual-fields').style.display = 'none';
+  document.getElementById('loc-status').classList.add('show');
+  document.getElementById('loc-coords').textContent = 'Obtendo localização...';
+  locType = 'gps';
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        document.getElementById('loc-coords').textContent = `Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)} · Licínio de Almeida, BA`;
+        document.getElementById('s-local').textContent = `📍 GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      },
+      () => {
+        document.getElementById('loc-coords').textContent = 'Localização simulada: Licínio de Almeida, BA';
+        document.getElementById('s-local').textContent = '📍 Licínio de Almeida, BA';
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  } else {
+    document.getElementById('loc-coords').textContent = 'Centro, Licínio de Almeida, BA';
+    document.getElementById('s-local').textContent = '📍 Centro, Licínio de Almeida, BA';
+  }
+  updateSummary();
+}
+function toggleManual() {
+  const fields = document.getElementById('manual-fields');
+  const isOpen = fields.style.display !== 'none';
+  fields.style.display = isOpen ? 'none' : 'block';
+  document.getElementById('loc-manual').classList.toggle('active', !isOpen);
+  document.getElementById('loc-gps').classList.remove('active');
+  document.getElementById('loc-status').classList.remove('show');
+  locType = !isOpen ? 'manual' : null;
+}
+
+/* =========================================================
+   PRIORIDADE / ANÔNIMO / CHAR
+   ========================================================= */
+function selectPrior(el, val) {
+  document.querySelectorAll('.prior-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  prioridadeSelecionada = val;
+}
+function countChars() {
+  document.getElementById('char-count').textContent = document.getElementById('descricao').value.length;
+}
+
+/* =========================================================
+   FORMATADORES
+   ========================================================= */
+function formatPhone(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,11);
+  if (v.length > 6) v = '(' + v.substring(0,2) + ') ' + v.substring(2,7) + '-' + v.substring(7);
+  else if (v.length > 2) v = '(' + v.substring(0,2) + ') ' + v.substring(2);
+  else if (v.length > 0) v = '(' + v;
+  el.value = v;
+}
+
+/* =========================================================
+   RESUMO
+   ========================================================= */
+function updateSummary() {
+  if (!tipoSelecionado) return;
+  document.getElementById('summary-box').classList.add('show');
+  const rua = document.getElementById('campo-rua').value;
+  const bairro = document.getElementById('campo-bairro').value;
+  const nome = document.getElementById('nome').value;
+  if (rua) document.getElementById('s-local').textContent = rua + (bairro ? ', ' + bairro : '');
+  if (nome) document.getElementById('s-nome').textContent = nome;
+}
+
+/* =========================================================
+   ENVIAR SOLICITAÇÃO
+   ========================================================= */
+function enviarSolicitacao() {
+  if (!tipoSelecionado) { showToast('👆 Selecione o tipo de solicitação!'); window.scrollTo({ top:0, behavior:'smooth' }); return; }
+  const nome = document.getElementById('nome').value.trim();
+  const whatsapp = document.getElementById('whatsapp').value.trim();
+  if (!nome) { showToast('📝 Preencha seu nome completo.'); return; }
+  if (!whatsapp) { showToast('📲 Informe seu WhatsApp para receber atualizações.'); return; }
+  if (!document.getElementById('campo-rua').value.trim()) { showToast('📍 Informe a rua/endereço do problema.'); return; }
+
+  const proto = '#0' + (Math.floor(Math.random() * 800) + 300);
+  const rua = document.getElementById('campo-rua').value.trim();
+  const bairro = document.getElementById('campo-bairro').value;
+  const local = rua + (bairro ? ', ' + bairro : '');
+  const descricao = document.getElementById('descricao').value;
+
+  const novaDoc = {
+    id: proto, emoji: tipoSelecionado.emoji, tipo: tipoSelecionado.label, local,
+    descricao: descricao || 'Sem descrição adicional.',
+    status: 'aberto', prioridade: prioridadeSelecionada,
+    data: new Date().toLocaleDateString('pt-BR'),
+    nome: nome,
+    whatsapp: whatsapp.replace(/\D/g,''),
+    progresso: 0, obs: '',
+    timeline: [
+      { label: 'Recebida',   date: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), status:'done' },
+      { label: 'Em análise', date: '—', status:'pending' },
+      { label: 'Em execução',date: '—', status:'pending' },
+      { label: 'Concluída',  date: '—', status:'pending' },
+    ],
+    _ts: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  db.collection('solicitacoes').add(novaDoc).catch(err => console.error('Erro ao salvar solicitação:',err));
+
+  // ✅ Disparo automático de confirmação via WhatsApp
+  if (whatsapp) {
+    const wppLimpo = whatsapp.replace(/\D/g, '');
+    enviarConfirmacaoAutomatica(wppLimpo, proto, tipoSelecionado.label, local, nome);
+  }
+
+  document.querySelectorAll('.form-card,.tipo-grid,.submit-area,.section-head,#ambulancia-alert').forEach(el => el.style.display='none');
+  document.getElementById('success-screen').style.display = 'block';
+  document.getElementById('proto-gerado').textContent = proto;
+
+  const wppInfo = document.getElementById('wpp-success-info');
+  wppInfo.style.display = 'flex';
+  wppInfo.innerHTML = `
+    <span class="wpp-success-icon">📲</span>
+    <div>
+      <p><strong>Quase lá, ${nome}!</strong> Toque no botão abaixo para confirmar sua solicitação pelo WhatsApp da Prefeitura e agilizar o atendimento!</p>
+      <button onclick="abrirWppCidadao('${proto}','${tipoSelecionado.label}','${local}','${whatsapp.replace(/\D/g,'')}')"
+        style="margin-top:10px;background:#25D366;color:#fff;border:none;border-radius:10px;padding:11px 18px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;touch-action:manipulation;font-family:var(--font-body)">
+        <span style="font-size:18px">💬</span> Confirmar via WhatsApp
+      </button>
+    </div>`;
+
+  updateHeroStats();
+  if (navigator.vibrate) navigator.vibrate([50,30,80]);
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* =========================================================
+   NOVA SOLICITAÇÃO (reset)
+   ========================================================= */
+function novasolicitacao() {
+  document.querySelectorAll('.form-card').forEach(el => el.style.display='block');
+  document.querySelector('.tipo-grid').style.display = 'grid';
+  document.querySelector('.submit-area').style.display = 'block';
+  document.querySelectorAll('.section-head').forEach(el => el.style.display='block');
+  document.getElementById('success-screen').style.display = 'none';
+  document.getElementById('ambulancia-alert').style.display = 'none';
+  document.getElementById('summary-box').classList.remove('show');
+  document.querySelectorAll('.tipo-card').forEach(c => c.classList.remove('selected'));
+  tipoSelecionado = null; fotos = [];
+  renderPhotos();
+  document.getElementById('upload-zone').style.display = 'block';
+  document.getElementById('upload-zone').classList.remove('has-file');
+  document.getElementById('descricao').value = '';
+  document.getElementById('char-count').textContent = '0';
+  document.getElementById('nome').value = '';
+  document.getElementById('whatsapp').value = '';
+  document.getElementById('campo-rua').value = '';
+  document.getElementById('campo-numero').value = '';
+  document.getElementById('campo-bairro').value = '';
+  document.getElementById('campo-ref').value = '';
+  locType = null;
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* =========================================================
+   SOLICITAÇÕES ATIVAS (público)
+   ========================================================= */
+function renderAtivas() {
+  const container = document.getElementById('lista-ativas');
+  const ativas = solicitacoes.filter(s => s.status !== 'resolvido');
+  if (!ativas.length) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:48px 20px;color:var(--text2)">
+        <div style="font-size:52px;margin-bottom:14px">✅</div>
+        <p style="font-weight:800;font-family:var(--font-disp);font-size:16px;color:var(--text)">Nada pendente no momento!</p>
+        <p style="font-size:13px;margin-top:6px">Todas as solicitações foram atendidas.</p>
+      </div>`;
+    return;
+  }
+  container.innerHTML = ativas.map(s => `
+    <div class="solicit-item" onclick="abrirDetalhe('${s.id}')">
+      <div class="solicit-emoji">${s.emoji}</div>
+      <div class="solicit-info">
+        <div class="solicit-titulo">${s.tipo}</div>
+        <div class="solicit-local">📍 ${s.local}</div>
+        <div class="solicit-data">🗓️ ${s.data}</div>
+        <div style="margin-top:8px">
+          <div style="height:5px;background:var(--surface2);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${s.progresso}%;background:linear-gradient(90deg,var(--emerald),#06d6a0);border-radius:3px;transition:width 0.5s"></div>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">${s.progresso}% concluído</div>
+        </div>
+      </div>
+      <span class="status-badge ${statusClass(s.status)}">${statusLabel(s.status)}</span>
+    </div>
+  `).join('');
+}
+
+function abrirDetalhe(id) {
+  const s = solicitacoes.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('detalhe-content').innerHTML = `
+    <div class="modal-title">${s.emoji} ${s.tipo}</div>
+    <div class="track-header">
+      <div style="font-size:32px">${s.emoji}</div>
+      <div>
+        <div class="track-id">${s.id}</div>
+        <div class="track-tipo">${s.local}</div>
+        <div style="margin-top:8px"><span class="status-badge ${statusClass(s.status)}">${statusLabel(s.status)}</span></div>
+      </div>
+    </div>
+    <div class="detalhe-progresso">
+      <div class="progresso-label">Andamento geral</div>
+      <div class="progresso-bar"><div class="progresso-fill" style="width:${s.progresso}%"></div></div>
+      <div class="progresso-pct">${s.progresso}%</div>
+    </div>
+    ${s.obs ? `<div class="detalhe-obs"><div class="detalhe-obs-label">📝 Observação da equipe</div><p>${s.obs}</p></div>` : ''}
+    <div class="timeline">${renderTimeline(s.timeline)}</div>
+  `;
+  document.getElementById('modal-detalhe').classList.add('open');
+}
+function closeDetalheIfOutside(e) {
+  if (e.target === document.getElementById('modal-detalhe')) document.getElementById('modal-detalhe').classList.remove('open');
+}
+
+/* =========================================================
+   AVISOS PÚBLICO
+   ========================================================= */
+function renderAvisosPublico() {
+  const container = document.getElementById('lista-avisos');
+  if (!avisos.length) {
+    container.innerHTML = '<p style="color:var(--text2);text-align:center;padding:48px 20px;font-size:14px">Nenhum aviso publicado.</p>';
+    return;
+  }
+  container.innerHTML = avisos.map(a => `
+    <div class="aviso-item">
+      <div class="aviso-topo">
+        <div class="aviso-emo">${a.emoji}</div>
+        <div>
+          <div class="aviso-titulo">${a.titulo}</div>
+          <div class="aviso-data">📅 ${a.data}</div>
+        </div>
+      </div>
+      <div class="aviso-body">${a.corpo}</div>
+    </div>
+  `).join('');
+}
+
+/* =========================================================
+   WHATSAPP — BACKEND AUTOMÁTICO
+   ========================================================= */
+
+// 🔧 Altere para o endereço do seu servidor
+const BACKEND_URL = 'http://localhost:3001';
+
+const ADMIN_WPP = '5577999999999';
+
+// Envia confirmação automática ao cidadão via backend
+async function enviarConfirmacaoAutomatica(whatsapp, proto, tipo, local, nome) {
+  try {
+    const resp = await fetch(`${BACKEND_URL}/api/confirmar-solicitacao`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ whatsapp, protocolo: proto, tipo, local, nome })
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      console.log('✅ Mensagem de confirmação enviada automaticamente para', whatsapp);
+    } else {
+      console.warn('⚠️ Backend retornou erro:', data.erro);
+    }
+  } catch (err) {
+    console.warn('⚠️ Não foi possível contatar o backend WhatsApp:', err.message);
+  }
+}
+
+// Envia atualização de status ao cidadão via backend (usada pelo admin)
+async function enviarWppCidadao(whatsapp, proto, tipo, local, tipoMensagem, obs) {
+  try {
+    const resp = await fetch(`${BACKEND_URL}/api/atualizar-status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ whatsapp, protocolo: proto, tipo, local, status: tipoMensagem === 'finalizado' ? 'resolvido' : tipoMensagem, obs: obs || '' })
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      console.log('✅ Atualização de status enviada para', whatsapp);
+    } else {
+      console.warn('⚠️ Backend retornou erro:', data.erro);
+    }
+  } catch (err) {
+    console.warn('⚠️ Não foi possível contatar o backend WhatsApp:', err.message);
+  }
+}
+
+function abrirWppCidadao(proto, tipo, local, wppCidadao) {
+  const msg = encodeURIComponent(`Olá! Acabei de registrar uma solicitação no sistema Cidade na Mão.\n\n📋 *Protocolo:* ${proto}\n📌 *Tipo:* ${tipo}\n📍 *Local:* ${local}\n\nPor favor, confirme o recebimento. Obrigado! 🙏`);
+  window.open(`https://wa.me/${ADMIN_WPP}?text=${msg}`, '_blank');
+}
+function notificarAdmin(proto, tipo, local, nome, prioridade, descricao) {
+  const msg = encodeURIComponent(`🔔 *Nova Solicitação — Cidade na Mão*\n\n📋 *Protocolo:* ${proto}\n📌 *Tipo:* ${tipo}\n📍 *Local:* ${local}\n👤 *Cidadão:* ${nome}\n⚡ *Prioridade:* ${prioridade}\n📝 *Descrição:* ${descricao}\n\n_Verifique o painel administrativo para mais detalhes._`);
+  window.open(`https://wa.me/${ADMIN_WPP}?text=${msg}`, '_blank');
+}
+
+/* =========================================================
+   TRACKING MODAL
+   ========================================================= */
+function openTracking() {
+  const val = document.getElementById('proto-input').value.trim();
+  if (val) document.getElementById('track-proto-input').value = val;
+  document.getElementById('modal-track').classList.add('open');
+  document.getElementById('track-result').classList.remove('show');
+  history.pushState({modal:true}, '');
+  setTimeout(() => document.getElementById('track-proto-input').focus(), 350);
+}
+function openTrackingId(id) {
+  document.getElementById('track-proto-input').value = id;
+  document.getElementById('modal-track').classList.add('open');
+  setTimeout(() => buscarProtocolo(), 200);
+}
+function closeTrackingIfOutside(e) {
+  if (e.target === document.getElementById('modal-track')) document.getElementById('modal-track').classList.remove('open');
+}
+function buscarProtocolo() {
+  const raw = document.getElementById('track-proto-input').value.trim();
+  const id = raw.startsWith('#') ? raw : '#' + raw;
+  const s = solicitacoes.find(x => x.id === id);
+  const result = document.getElementById('track-result');
+  if (!s) { showToast('❌ Protocolo não encontrado: ' + id); result.classList.remove('show'); return; }
+  document.getElementById('track-emoji').textContent = s.emoji;
+  document.getElementById('tr-id').textContent = s.id;
+  document.getElementById('tr-tipo').textContent = s.tipo + ' — ' + s.local;
+  document.getElementById('tr-status-badge').innerHTML = `<span class="status-badge ${statusClass(s.status)}">${statusLabel(s.status)}</span>`;
+  document.getElementById('tr-progresso').style.width = s.progresso + '%';
+  document.getElementById('tr-pct').textContent = s.progresso + '%';
+  const obsBox = document.getElementById('tr-obs-box');
+  if (s.obs) { obsBox.style.display='block'; document.getElementById('tr-obs-texto').textContent = s.obs; }
+  else obsBox.style.display = 'none';
+  document.getElementById('track-timeline').innerHTML = renderTimeline(s.timeline);
+  result.classList.add('show');
+}
+function renderTimeline(tl) {
+  if (!tl || !tl.length) return '';
+  return tl.map((t, i) => `
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-dot ${t.status}">${t.status==='done'?'✓':t.status==='current'?'●':'○'}</div>
+        ${i < tl.length-1 ? `<div class="tl-line ${t.status==='done'?'done':''}"></div>` : ''}
+      </div>
+      <div class="tl-content">
+        <div class="tl-title">${t.label}</div>
+        <div class="tl-date">${t.date}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* =========================================================
+   STATUS HELPERS
+   ========================================================= */
+function statusClass(s) {
+  return { aberto:'s-aberto', andamento:'s-andamento', resolvido:'s-resolvido', urgente:'s-urgente' }[s] || 's-aberto';
+}
+function statusLabel(s) {
+  return { aberto:'Aberto', andamento:'Em andamento', resolvido:'Resolvido', urgente:'🚨 Urgente' }[s] || s;
+}
+
+/* =========================================================
+   ADMIN — AUTENTICAÇÃO
+   ========================================================= */
+function irParaAdmin() {
+  document.getElementById('public-app').style.display = 'none';
+  document.getElementById('admin-app').classList.add('active');
+  document.getElementById('admin-login-screen').style.display = 'flex';
+  document.getElementById('admin-painel').style.display = 'none';
+}
+function voltarPublico() {
+  document.getElementById('public-app').style.display = 'block';
+  document.getElementById('admin-app').classList.remove('active');
+}
+function fazerLogin() {
+  const email = document.getElementById('admin-user').value.trim();
+  const senha = document.getElementById('admin-pass').value;
+  const btn = document.getElementById('btn-login');
+  btn.textContent = '⏳ Entrando...';
+  btn.disabled = true;
+  firebase.auth().signInWithEmailAndPassword(email, senha)
+    .then(() => {
+      document.getElementById('login-error').classList.remove('show');
+      // onAuthStateChanged cuida de mostrar o painel e renderizar
+    })
+    .catch(() => {
+      document.getElementById('login-error').classList.add('show');
+    })
+    .finally(() => {
+      btn.textContent = '🔐 Entrar no Painel';
+      btn.disabled = false;
+    });
+}
+function fazerLogout() {
+  firebase.auth().signOut().then(() => {
+    adminLogado = false;
+    document.getElementById('admin-painel').style.display = 'none';
+    document.getElementById('admin-login-screen').style.display = 'flex';
+    document.getElementById('admin-user').value = '';
+    document.getElementById('admin-pass').value = '';
+    showToast('👋 Logout realizado com sucesso');
+  });
+}
+function updateAdminHora() {
+  const el = document.getElementById('admin-hora');
+  if (el) el.textContent = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+}
+
+/* =========================================================
+   ADMIN — RENDER
+   ========================================================= */
+function renderAdmin() {
+  renderAdminDashboard();
+  renderAdminLista(filtroAtual);
+  renderAdminUrgentes();
+  renderAdminAvisos();
+  renderAdminBadges();
+  renderRelatorios();
+}
+function renderAdminBadges() {
+  document.getElementById('badge-total').textContent = solicitacoes.length;
+  document.getElementById('badge-urgente').textContent = solicitacoes.filter(s => s.status==='urgente' || s.prioridade==='urgente').length;
+}
+
+/* ── helpers ── */
+function contagemPor(campo) {
+  const m = {};
+  solicitacoes.forEach(s => { const v = s[campo]||'Não informado'; m[v] = (m[v]||0)+1; });
+  return Object.entries(m).sort((a,b)=>b[1]-a[1]);
+}
+function extrairBairro(local) {
+  if (!local) return 'Não informado';
+  const partes = local.split(',');
+  return partes.length > 1 ? partes[partes.length-1].trim() : partes[0].trim();
+}
+function barChart(entries, colors, total) {
+  if (!entries.length) return '<p style="color:var(--text2);font-size:13px;padding:12px 0">Nenhum dado disponível.</p>';
+  return `<div class="report-card">${entries.slice(0,10).map(([label, count]) => {
+    const pct = total > 0 ? Math.round((count/total)*100) : 0;
+    const color = colors ? colors[label] || '#8696B2' : 'var(--emerald)';
+    return `<div class="bar-row">
+      <div class="bar-label" title="${label}">${label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${pct}%;background:${color}">
+          ${pct >= 15 ? `<span class="bar-pct">${pct}%</span>` : ''}
+        </div>
+      </div>
+      <div class="bar-count">${count}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderAdminDashboard() {
+  const total     = solicitacoes.length;
+  const abertos   = solicitacoes.filter(s=>s.status==='aberto').length;
+  const andamento = solicitacoes.filter(s=>s.status==='andamento').length;
+  const resolvidos= solicitacoes.filter(s=>s.status==='resolvido').length;
+  const urgentes  = solicitacoes.filter(s=>s.status==='urgente'||s.prioridade==='urgente').length;
+  const anonimos  = solicitacoes.filter(s=>!s.whatsapp||s.nome==='Anônimo').length;
+  const taxa      = total > 0 ? Math.round((resolvidos/total)*100) : 0;
+
+  // KPIs
+  document.getElementById('admin-stats').innerHTML = `
+    <div class="admin-stat-card" style="border-left:4px solid var(--navy)">
+      <div class="admin-stat-num">${total}</div>
+      <div class="admin-stat-label">Total</div>
+    </div>
+    <div class="admin-stat-card" style="border-left:4px solid #1D4ED8">
+      <div class="admin-stat-num" style="color:#1D4ED8">${abertos}</div>
+      <div class="admin-stat-label">Abertos</div>
+    </div>
+    <div class="admin-stat-card" style="border-left:4px solid var(--amber)">
+      <div class="admin-stat-num" style="color:var(--amber2)">${andamento}</div>
+      <div class="admin-stat-label">Em andamento</div>
+    </div>
+    <div class="admin-stat-card" style="border-left:4px solid var(--emerald)">
+      <div class="admin-stat-num" style="color:var(--emerald2)">${resolvidos}</div>
+      <div class="admin-stat-label">Resolvidos</div>
+    </div>
+    <div class="admin-stat-card" style="border-left:4px solid var(--danger)">
+      <div class="admin-stat-num" style="color:var(--danger)">${urgentes}</div>
+      <div class="admin-stat-label">Urgentes</div>
+    </div>
+    <div class="admin-stat-card" style="border-left:4px solid var(--text3)">
+      <div class="admin-stat-num" style="color:var(--text2)">${anonimos}</div>
+      <div class="admin-stat-label">Anônimos</div>
+    </div>
+  `;
+
+  // Taxa resolução
+  const taxaColor = taxa >= 70 ? 'var(--emerald)' : taxa >= 40 ? 'var(--amber)' : 'var(--danger)';
+  document.getElementById('taxa-card').innerHTML = `
+    <div style="font-size:11px;font-weight:800;color:var(--emerald2);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px">✅ Taxa de resolução</div>
+    <div style="height:12px;background:var(--surface2);border-radius:6px;overflow:hidden;margin-bottom:8px">
+      <div style="height:100%;width:${taxa}%;background:${taxaColor};border-radius:6px;transition:width 0.6s ease"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+      <span style="font-weight:800;color:${taxaColor};font-size:20px">${taxa}%</span>
+      <span style="color:var(--text2);font-size:11px">${resolvidos} de ${total} resolvidos</span>
+    </div>
+  `;
+
+  // Urgências / SLA
+  document.getElementById('sla-card').innerHTML = `
+    <div style="font-size:11px;font-weight:800;color:var(--danger);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px">🚨 Urgências & SLA</div>
+    <div class="sla-indicator ${urgentes===0?'sla-ok':urgentes<=2?'sla-warn':'sla-bad'}">
+      ${urgentes===0?'✅':'⚠️'} ${urgentes} demanda${urgentes!==1?'s':''} urgente${urgentes!==1?'s':''}
+    </div>
+    <div class="sla-indicator ${abertos===0?'sla-ok':abertos<=5?'sla-warn':'sla-bad'}">
+      🔵 ${abertos} aberta${abertos!==1?'s':''} aguardando
+    </div>
+    <div class="sla-indicator ${andamento===0?'sla-ok':'sla-warn'}">
+      🟡 ${andamento} em andamento
+    </div>
+  `;
+
+  // Gráfico por tipo
+  const tipos = contagemPor('tipo');
+  const tipoColors = {'Buraco na via':'#1D4ED8','Iluminação':'#F59E0B','Lixo / Entulho':'#6B7280','Água / Esgoto':'#0EA5E9','Árvore / Mato':'#16A34A','Calçada':'#7C3AED','Urgência':'#DC2626','Ambulância':'#E11D48','Praça / Parque':'#059669','Sinalização':'#D97706','Animal':'#92400E','Outro assunto':'#6B7280'};
+  document.getElementById('chart-tipos').innerHTML = barChart(tipos, tipoColors, total);
+
+  // Gráfico por bairro
+  const bairroMap = {};
+  solicitacoes.forEach(s => {
+    const b = extrairBairro(s.local);
+    bairroMap[b] = (bairroMap[b]||0)+1;
+  });
+  const bairros = Object.entries(bairroMap).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('chart-bairros').innerHTML = barChart(bairros, null, total);
+
+  // Recentes
+  const recentes = solicitacoes.slice(0,5);
+  document.getElementById('admin-recentes').innerHTML = recentes.length
+    ? recentes.map(s => renderAdminCard(s, false)).join('')
+    : '<p style="color:var(--text2);padding:20px 0">Nenhuma solicitação registrada ainda.</p>';
+}
+
+function renderRelatorios() {
+  const total     = solicitacoes.length;
+  const resolvidos= solicitacoes.filter(s=>s.status==='resolvido').length;
+  const urgentes  = solicitacoes.filter(s=>s.status==='urgente'||s.prioridade==='urgente').length;
+  const taxa      = total > 0 ? Math.round((resolvidos/total)*100) : 0;
+  const comWpp    = solicitacoes.filter(s=>s.whatsapp&&s.nome&&s.nome!=='Anônimo').length;
+  const anonimos  = total - comWpp;
+
+  // Resumo executivo
+  document.getElementById('rel-exec').innerHTML = `
+    <div class="rel-exec-item"><div class="rel-exec-num">${total}</div><div class="rel-exec-label">Total registrado</div></div>
+    <div class="rel-exec-item"><div class="rel-exec-num">${taxa}%</div><div class="rel-exec-label">Taxa resolução</div></div>
+    <div class="rel-exec-item"><div class="rel-exec-num">${urgentes}</div><div class="rel-exec-label">Urgentes ativos</div></div>
+  `;
+
+  // Por tipo
+  const tipos = contagemPor('tipo');
+  const tipoColors={'Buraco na via':'#1D4ED8','Iluminação':'#F59E0B','Lixo / Entulho':'#6B7280','Água / Esgoto':'#0EA5E9','Árvore / Mato':'#16A34A','Calçada':'#7C3AED','Urgência':'#DC2626','Ambulância':'#E11D48','Praça / Parque':'#059669','Sinalização':'#D97706','Animal':'#92400E','Outro assunto':'#6B7280'};
+  document.getElementById('rel-tipos').innerHTML = barChart(tipos, tipoColors, total);
+
+  // Por status
+  const statusEntries=[['🔵 Aberto',solicitacoes.filter(s=>s.status==='aberto').length],['🟡 Em andamento',solicitacoes.filter(s=>s.status==='andamento').length],['🔴 Urgente',urgentes],['🟢 Resolvido',resolvidos]];
+  const statusColors={'🔵 Aberto':'#1D4ED8','🟡 Em andamento':'#F59E0B','🔴 Urgente':'#DC2626','🟢 Resolvido':'#16A34A'};
+  document.getElementById('rel-status').innerHTML = barChart(statusEntries, statusColors, total);
+
+  // Por prioridade
+  const prioridades = contagemPor('prioridade');
+  const priorColors={'normal':'#16A34A','alta':'#F59E0B','urgente':'#DC2626'};
+  document.getElementById('rel-prioridade').innerHTML = barChart(prioridades, priorColors, total);
+
+  // Por localidade
+  const bairroMap = {};
+  solicitacoes.forEach(s => { const b=extrairBairro(s.local); bairroMap[b]=(bairroMap[b]||0)+1; });
+  document.getElementById('rel-locais').innerHTML = barChart(Object.entries(bairroMap).sort((a,b)=>b[1]-a[1]), null, total);
+
+  // Anonimato
+  const anoEntries=[['Com identificação', comWpp],['Sem WhatsApp', anonimos]];
+  const anoColors={'Com identificação':'var(--emerald)','Sem WhatsApp':'var(--text3)'};
+  document.getElementById('rel-anonimo').innerHTML = barChart(anoEntries, anoColors, total);
+
+  // Popular select de localidades
+  const lugares = Object.keys(bairroMap).sort();
+  const sel = document.getElementById('rel-lugar-select');
+  sel.innerHTML = '<option value="">— Selecione um lugar —</option>' +
+    lugares.map(function(l){ return '<option value="' + l + '">' + l + ' (' + bairroMap[l] + ' demanda' + (bairroMap[l]!==1?'s':'') + ')</option>'; }).join('');
+}
+function gerarRelatorioLugar() {
+  var sel = document.getElementById('rel-lugar-select');
+  var lugar = sel.value;
+  var container = document.getElementById('rel-lugar-resultado');
+  var btnImprimir = document.getElementById('btn-imprimir-lugar');
+
+  if (!lugar) { showToast('Selecione uma localidade primeiro.'); return; }
+
+  var lista = solicitacoes.filter(function(s){ return extrairBairro(s.local) === lugar; });
+
+  if (!lista.length) {
+    container.innerHTML = '<p style="color:var(--text2);padding:20px 0">Nenhuma demanda encontrada para "' + lugar + '".</p>';
+    btnImprimir.style.display = 'none';
+    return;
+  }
+
+  var stLabel2 = function(s){ return {aberto:'Aberto',andamento:'Em andamento',urgente:'Urgente',resolvido:'Resolvido'}[s]||s; };
+  var stEmoji  = function(s){ return {aberto:'🔵',andamento:'🟡',urgente:'🔴',resolvido:'🟢'}[s]||''; };
+  var stClass2 = function(s){ return {aberto:'s-aberto',andamento:'s-andamento',urgente:'s-urgente',resolvido:'s-resolvido'}[s]||'s-aberto'; };
+  var prLabel  = function(p){ return {normal:'🟢 Normal',alta:'🟡 Alta',urgente:'🔴 Urgente'}[p]||p; };
+
+  // Contadores por status para o cabeçalho
+  var badgesHtml = '';
+  ['aberto','andamento','urgente','resolvido'].forEach(function(st) {
+    var n = lista.filter(function(s){ return s.status === st; }).length;
+    if (n) badgesHtml += '<span class="status-badge ' + stClass2(st) + '">' + stEmoji(st) + ' ' + stLabel2(st) + ': ' + n + '</span>';
+  });
+
+  // Cards de cada demanda
+  var cardsHtml = '';
+  lista.forEach(function(s) {
+    var wppHtml = '';
+    if (s.whatsapp && s.whatsapp.length >= 10) {
+      wppHtml = '<span>📲 (' + s.whatsapp.substring(0,2) + ') ' + s.whatsapp.substring(2,7) + '-' + s.whatsapp.substring(7) + '</span>';
+    }
+    var obsHtml = s.obs ? '<div style="margin-top:8px;padding:8px 12px;background:var(--amber3);border-radius:var(--r-xs);font-size:12px;color:var(--amber2)">📝 ' + s.obs + '</div>' : '';
+    cardsHtml += ''
+      + '<div style="background:#fff;border-radius:var(--r-sm);padding:16px;margin-bottom:10px;border:1.5px solid rgba(0,0,0,0.07);box-shadow:var(--sh-xs)">'
+      + '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'
+      + '<span style="font-size:28px">' + (s.emoji||'📌') + '</span>'
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="font-size:13px;font-weight:800;color:var(--text)">' + s.id + ' — ' + s.tipo + '</div>'
+      + '<div style="font-size:11.5px;color:var(--text2);margin-top:2px">📍 ' + s.local + '</div>'
+      + '</div>'
+      + '<span class="status-badge ' + stClass2(s.status) + '">' + stEmoji(s.status) + ' ' + stLabel2(s.status) + '</span>'
+      + '</div>'
+      + '<div style="font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:8px">' + (s.descricao||'—') + '</div>'
+      + '<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--text2)">'
+      + '<span>🗓️ ' + s.data + '</span>'
+      + '<span>⚡ ' + prLabel(s.prioridade||'normal') + '</span>'
+      + '<span>👤 ' + (s.nome||'—') + '</span>'
+      + wppHtml
+      + '</div>'
+      + obsHtml
+      + '</div>';
+  });
+
+  container.innerHTML = ''
+    + '<div id="print-area-lugar">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px">'
+    + '<div>'
+    + '<div style="font-family:var(--font-disp);font-size:16px;font-weight:800;color:var(--text)">📍 ' + lugar + '</div>'
+    + '<div style="font-size:12px;color:var(--text2);margin-top:2px">' + lista.length + ' demanda' + (lista.length!==1?'s':'') + ' registrada' + (lista.length!==1?'s':'') + '</div>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap">' + badgesHtml + '</div>'
+    + '</div>'
+    + cardsHtml
+    + '</div>';
+
+  btnImprimir.style.display = 'inline-block';
+}
+
+function imprimirRelatorioLugar() {
+  const lugar = document.getElementById('rel-lugar-select').value || 'Localidade';
+  const sel = document.getElementById('rel-lugar-select');
+  if (!sel.value) { showToast('⚠️ Gere o relatório primeiro.'); return; }
+  const lista = solicitacoes.filter(function(s){ return extrairBairro(s.local) === lugar; });
+  const data = new Date().toLocaleDateString('pt-BR');
+
+  var stLabel = function(s){ return {aberto:'Aberto',andamento:'Em andamento',urgente:'Urgente',resolvido:'Resolvido'}[s]||s; };
+  var prLabel = function(p){ return {normal:'Normal',alta:'Alta',urgente:'Urgente'}[p]||p; };
+  var stClass = function(s){ return {aberto:'b-aberto',andamento:'b-andamento',urgente:'b-urgente',resolvido:'b-resolvido'}[s]||'b-aberto'; };
+
+  var cards = '';
+  lista.forEach(function(s) {
+    var fone = '';
+    if (s.whatsapp && s.whatsapp.length >= 10) {
+      fone = ' &nbsp;|&nbsp; Tel: (' + s.whatsapp.substring(0,2) + ') ' + s.whatsapp.substring(2,7) + '-' + s.whatsapp.substring(7);
+    }
+    var obsHtml = s.obs ? '<div style="margin-top:8px;padding:6px 10px;background:#FFF8EC;border-radius:6px;font-size:11px;color:#92400E">Obs: ' + s.obs + '</div>' : '';
+    cards += '<div class="card">'
+      + '<div class="card-top">'
+      + '<div style="flex:1"><strong>' + s.id + ' &mdash; ' + s.tipo + '</strong></div>'
+      + '<span class="badge ' + stClass(s.status) + '">' + stLabel(s.status) + '</span>'
+      + '</div>'
+      + '<div style="font-size:11.5px;color:#555;margin-bottom:6px">Local: ' + s.local + '</div>'
+      + '<div class="desc">' + (s.descricao || '&mdash;') + '</div>'
+      + '<div class="meta">'
+      + 'Data: ' + s.data
+      + ' &nbsp;|&nbsp; Prioridade: ' + prLabel(s.prioridade||'normal')
+      + ' &nbsp;|&nbsp; Cidadao: ' + (s.nome||'&mdash;')
+      + fone
+      + '</div>'
+      + obsHtml
+      + '</div>';
+  });
+
+  var html = '<!DOCTYPE html><html lang="pt-BR"><head>'
+    + '<meta charset="UTF-8">'
+    + '<title>Relatorio - ' + lugar + '</title>'
+    + '<style>'
+    + 'body{font-family:Arial,sans-serif;margin:0;padding:24px;color:#1a1a1a;font-size:13px}'
+    + '.header-print{border-bottom:2px solid #0D2137;padding-bottom:14px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-start}'
+    + '.header-print h1{font-size:18px;font-weight:800;color:#0D2137;margin:0 0 4px}'
+    + '.header-print p{font-size:11px;color:#666;margin:2px 0}'
+    + '.card{border:1.5px solid #ddd;border-radius:8px;padding:14px;margin-bottom:10px;page-break-inside:avoid}'
+    + '.card-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}'
+    + '.badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}'
+    + '.b-aberto{background:#EFF6FF;color:#1D4ED8}'
+    + '.b-andamento{background:#FFFBEB;color:#92400E}'
+    + '.b-urgente{background:#FEF2F2;color:#DC2626}'
+    + '.b-resolvido{background:#F0FDF4;color:#15803D}'
+    + '.desc{color:#555;margin:6px 0;line-height:1.6}'
+    + '.meta{font-size:11px;color:#777}'
+    + '.footer-print{border-top:1px solid #ddd;margin-top:24px;padding-top:10px;font-size:10px;color:#999;text-align:center}'
+    + '@media print{body{padding:0}}'
+    + '<\/style><\/head><body>'
+    + '<div class="header-print">'
+    + '<div><h1>Prefeitura de Licinio de Almeida</h1>'
+    + '<p>Licinio Resolve &mdash; Relatorio por Localidade</p>'
+    + '<p><strong>Local:</strong> ' + lugar + ' &nbsp;|&nbsp; <strong>Total:</strong> ' + lista.length + ' demanda(s) &nbsp;|&nbsp; <strong>Gerado em:</strong> ' + data + '</p>'
+    + '</div><div style="text-align:right;font-size:11px;color:#666"><p>Cidade na Mao v2.0</p></div></div>'
+    + cards
+    + '<div class="footer-print">Prefeitura Municipal de Licinio de Almeida &middot; CNPJ 14.105.183/0001-57 &middot; Bahia &middot; Brasil</div>'
+    + '<\/body><\/html>';
+
+  var janela = window.open('', '_blank');
+  janela.document.write(html);
+  janela.document.close();
+  janela.onload = function(){ janela.focus(); janela.print(); };
+}
+
+function buscarAdmin() {
+  buscaAtual = document.getElementById('admin-busca').value.toLowerCase();
+  renderAdminLista(filtroAtual);
+}
+function renderAdminLista(filtro) {
+  filtroAtual = filtro;
+  let lista = filtro === 'todos' ? solicitacoes : solicitacoes.filter(s => s.status === filtro);
+  if (buscaAtual) {
+    lista = lista.filter(s =>
+      (s.nome||'').toLowerCase().includes(buscaAtual) ||
+      (s.local||'').toLowerCase().includes(buscaAtual) ||
+      (s.id||'').toLowerCase().includes(buscaAtual) ||
+      (s.tipo||'').toLowerCase().includes(buscaAtual)
+    );
+  }
+  const container = document.getElementById('admin-lista-solicit');
+  container.innerHTML = lista.length
+    ? lista.map(s => renderAdminCard(s, true)).join('')
+    : '<p style="color:var(--text2);padding:24px 0">Nenhuma solicitação encontrada.</p>';
+}
+function renderAdminUrgentes() {
+  const urgentes = solicitacoes.filter(s => s.status==='urgente' || s.prioridade==='urgente');
+  document.getElementById('admin-lista-urgentes').innerHTML = urgentes.length
+    ? urgentes.map(s => renderAdminCard(s, true)).join('')
+    : `<div style="text-align:center;padding:48px 20px;color:var(--text2)">
+        <div style="font-size:48px;margin-bottom:12px">✅</div>
+        <p style="font-weight:800;font-family:var(--font-disp)">Sem urgências no momento.</p>
+      </div>`;
+}
+function renderAdminCard(s, expandido) {
+  const temWpp = s.whatsapp && s.whatsapp.length >= 10;
+  return `
+    <div class="admin-card ${s.status==='urgente'||s.prioridade==='urgente' ? 'admin-card-urgente' : ''}" id="card-${s.id.replace('#','')}">
+      <div class="admin-card-topo">
+        <div class="admin-card-emoji">${s.emoji}</div>
+        <div class="admin-card-info">
+          <div class="admin-card-id">${s.id}</div>
+          <div class="admin-card-tipo">${s.tipo}</div>
+          <div class="admin-card-local">📍 ${s.local}</div>
+          <div class="admin-card-meta">
+            <span>🗓️ ${s.data}</span>
+            <span class="status-badge ${statusClass(s.status)}">${statusLabel(s.status)}</span>
+            <span style="background:#F1F5F9;color:var(--text2);padding:3px 8px;border-radius:100px;font-size:10px;font-weight:700">${s.prioridade||'normal'}</span>
+          </div>
+          ${renderSLABadge(s)}
+        </div>
+      </div>
+      ${expandido ? `
+        <div class="admin-card-body">
+          <div class="admin-card-desc">${s.descricao}</div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:10px">
+            👤 <strong>${s.nome||'Anônimo'}</strong> ·
+            ${temWpp
+              ? `💬 <a href="https://wa.me/55${s.whatsapp}" target="_blank" style="color:var(--emerald2)">(${s.whatsapp.substring(0,2)}) ${s.whatsapp.substring(2,7)}-${s.whatsapp.substring(7)}</a>`
+              : '<span style="color:var(--text3)">Anônimo — sem WhatsApp</span>'}
+          </div>
+          <textarea class="admin-obs-input" id="obs-${s.id.replace('#','')}" placeholder="Observação para o cidadão (aparece no acompanhamento)...">${s.obs||''}</textarea>
+          <div class="admin-card-acoes">
+            <select class="admin-select-status" id="status-${s.id.replace('#','')}">
+              <option value="aberto"    ${s.status==='aberto'?'selected':''}>🔵 Aberto</option>
+              <option value="andamento" ${s.status==='andamento'?'selected':''}>🟡 Em andamento</option>
+              <option value="urgente"   ${s.status==='urgente'?'selected':''}>🔴 Urgente</option>
+              <option value="resolvido" ${s.status==='resolvido'?'selected':''}>🟢 Resolvido</option>
+            </select>
+            <button class="btn-admin-salvar" onclick="salvarStatus('${s.id}')">💾 Salvar</button>
+            <button class="btn-admin-apagar" onclick="confirmarExclusao('${s.id}')">🗑️ Apagar</button>
+          </div>
+          <div class="admin-wpp-info" style="margin-top:10px">
+            ${temWpp
+              ? `📲 Ao salvar como <strong>Em andamento</strong> ou <strong>Resolvido</strong>, o cidadão recebe mensagem automática no WhatsApp <strong>(${s.whatsapp.substring(0,2)}) ${s.whatsapp.substring(2,7)}-${s.whatsapp.substring(7)}</strong>.`
+              : '⚠️ Cidadão anônimo — nenhuma notificação será enviada.'}
+          </div>
+        </div>
+      ` : `<button class="admin-card-expandir" onclick="switchAdminTab('solicitacoes');setTimeout(()=>document.getElementById('card-${s.id.replace('#','')}')?.scrollIntoView({behavior:'smooth'}),200)">Ver detalhes →</button>`}
+    </div>
+  `;
+}
+
+/* =========================================================
+   ADMIN — SALVAR STATUS
+   ========================================================= */
+function salvarStatus(id) {
+  const s = solicitacoes.find(x => x.id === id);
+  if (!s) return;
+  const key = id.replace('#','');
+  const novoStatus = document.getElementById('status-' + key).value;
+  const novaObs = document.getElementById('obs-' + key).value;
+  const foiResolvido = novoStatus === 'resolvido' && s.status !== 'resolvido';
+  const statusAnterior = s.status;
+  s.status = novoStatus; s.obs = novaObs;
+  const progressoMap = { aberto:10, andamento:55, urgente:10, resolvido:100 };
+  s.progresso = progressoMap[novoStatus] || 10;
+  if (novoStatus === 'andamento' || novoStatus === 'urgente') {
+    s.timeline[1].status = 'done'; s.timeline[1].date = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    s.timeline[2].status = 'current';
+  } else if (novoStatus === 'resolvido') {
+    const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    s.timeline.forEach((t,i) => { t.status='done'; if(t.date==='—') t.date=now; });
+  }
+  db.collection('solicitacoes').doc(s._docId).update({
+    status: novoStatus, obs: novaObs, progresso: s.progresso, timeline: s.timeline
+  }).then(() => {
+    showToast('✅ Salvo! Status: ' + statusLabel(novoStatus));
+    // Registrar no log de auditoria
+    registrarLog('status', id, `Status alterado para "${statusLabel(novoStatus)}"` + (novaObs ? ` · Obs: "${novaObs.substring(0,60)}${novaObs.length>60?'…':''}"` : ''));
+    renderAdmin();
+    if (!s.whatsapp) return;
+    if (novoStatus === 'andamento' && statusAnterior !== 'andamento')
+      setTimeout(() => enviarWppCidadao(s.whatsapp, s.id, s.tipo, s.local, 'andamento', novaObs), 400);
+    else if (novoStatus === 'resolvido' && statusAnterior !== 'resolvido')
+      setTimeout(() => enviarWppCidadao(s.whatsapp, s.id, s.tipo, s.local, 'finalizado', novaObs), 400);
+  }).catch(err => { console.error('Erro ao salvar status:', err); showToast('❌ Erro ao salvar. Tente novamente.'); });
+}
+
+/* =========================================================
+   ADMIN — APAGAR SOLICITAÇÃO
+   ========================================================= */
+let _idParaExcluir = null;
+
+function confirmarExclusao(id) {
+  _idParaExcluir = id;
+  document.getElementById('exclusao-id-label').textContent = id;
+  const btn = document.getElementById('btn-confirmar-excluir');
+  btn.textContent = 'Sim, apagar';
+  btn.disabled = false;
+  document.getElementById('modal-confirmar-exclusao').classList.add('open');
+}
+
+function fecharModalExclusao() {
+  _idParaExcluir = null;
+  document.getElementById('modal-confirmar-exclusao').classList.remove('open');
+}
+
+function executarExclusao() {
+  if (!_idParaExcluir) return;
+  const id = _idParaExcluir;
+  const s = solicitacoes.find(x => x.id === id);
+  if (!s || !s._docId) { showToast('❌ Solicitação não encontrada.'); fecharModalExclusao(); return; }
+
+  const btn = document.getElementById('btn-confirmar-excluir');
+  btn.textContent = 'Apagando…';
+  btn.disabled = true;
+
+  db.collection('solicitacoes').doc(s._docId).delete()
+    .then(() => {
+      registrarLog('excluiu', id, `Solicitação apagada: ${s.tipo} · ${s.local}`);
+      solicitacoes = solicitacoes.filter(x => x.id !== id);
+      fecharModalExclusao();
+      showToast('🗑️ Solicitação ' + id + ' apagada.');
+      renderAdmin();
+    })
+    .catch(err => {
+      console.error('Erro ao apagar:', err);
+      showToast('❌ Erro ao apagar. Tente novamente.');
+      btn.textContent = 'Sim, apagar';
+      btn.disabled = false;
+    });
+}
+
+/* =========================================================
+   AUDITORIA — REGISTRAR AÇÃO
+   ========================================================= */
+function registrarLog(tipo, solicitacaoId, descricao) {
+  db.collection('auditoria').add({
+    tipo,           // 'status' | 'excluiu' | 'obs'
+    solicitacaoId,
+    descricao,
+    admin: adminEmailAtual,
+    _ts: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(err => console.warn('Log falhou:', err));
+}
+
+/* =========================================================
+   AUDITORIA — RENDERIZAR LOG
+   ========================================================= */
+let _logsCache = [];
+
+function renderLogAuditoria() {
+  db.collection('auditoria').orderBy('_ts', 'desc').limit(200)
+    .onSnapshot(snap => {
+      _logsCache = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+      _renderLogFiltrado(_logFiltroAtual);
+    }, err => console.warn('Erro ao carregar log:', err));
+}
+
+function filtrarLog(tipo) {
+  _logFiltroAtual = tipo;
+  // Atualizar botões
+  ['todos','status','excluiu','obs'].forEach(t => {
+    const btn = document.getElementById('log-btn-' + t);
+    if (!btn) return;
+    const ativo = t === tipo;
+    btn.style.background = ativo ? 'var(--navy)' : '#fff';
+    btn.style.color = ativo ? '#fff' : 'var(--text2)';
+    btn.style.borderColor = ativo ? 'var(--navy)' : 'var(--surface2)';
+  });
+  _renderLogFiltrado(tipo);
+}
+
+function _renderLogFiltrado(tipo) {
+  const container = document.getElementById('admin-log-lista');
+  if (!container) return;
+  const lista = tipo === 'todos' ? _logsCache : _logsCache.filter(l => l.tipo === tipo);
+  if (!lista.length) {
+    container.innerHTML = '<p style="color:var(--text3);font-size:13px;padding:24px 0;text-align:center">Nenhuma ação registrada.</p>';
+    return;
+  }
+  const icones = { status: '🔄', excluiu: '🗑️', obs: '📝' };
+  const dotClass = { status: 'log-dot-status', excluiu: 'log-dot-apagou', obs: 'log-dot-obs' };
+  container.innerHTML = lista.map(l => {
+    const dt = l._ts ? new Date(l._ts.seconds * 1000).toLocaleString('pt-BR') : '—';
+    return `<div class="log-item">
+      <div class="log-dot ${dotClass[l.tipo] || 'log-dot-status'}"></div>
+      <div style="flex:1;min-width:0">
+        <div class="log-desc">${icones[l.tipo] || '•'} ${l.descricao}</div>
+        <div class="log-meta">Protocolo ${l.solicitacaoId} · ${l.admin || 'admin'} · ${dt}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* =========================================================
+   SLA — CALCULAR VENCIMENTO AUTOMÁTICO
+   ========================================================= */
+const SLA_HORAS = { normal: 120, alta: 48, urgente: 24 }; // horas
+
+function calcularSLA(s) {
+  if (s.status === 'resolvido') return null;
+  // Tenta pegar data de criação pelo timestamp
+  if (!s._ts) return null;
+  const criado = s._ts.seconds ? new Date(s._ts.seconds * 1000) : null;
+  if (!criado) return null;
+  const prioridade = s.prioridade || 'normal';
+  const limiteHoras = SLA_HORAS[prioridade] || 120;
+  const vencimento = new Date(criado.getTime() + limiteHoras * 3600000);
+  const agora = new Date();
+  const diffH = (vencimento - agora) / 3600000;
+  return { vencimento, diffH, prioridade };
+}
+
+function renderSLABadge(s) {
+  const sla = calcularSLA(s);
+  if (!sla) return '';
+  const { diffH } = sla;
+  if (diffH < 0) {
+    const hAtraso = Math.abs(Math.round(diffH));
+    return `<div class="sla-badge sla-badge-vencido">⚠️ SLA vencido há ${hAtraso}h</div>`;
+  } else if (diffH < 12) {
+    return `<div class="sla-badge sla-badge-warn">⏰ Vence em ${Math.round(diffH)}h</div>`;
+  } else {
+    const dias = Math.floor(diffH / 24);
+    const horas = Math.round(diffH % 24);
+    const txt = dias > 0 ? `${dias}d ${horas}h` : `${Math.round(diffH)}h`;
+    return `<div class="sla-badge sla-badge-ok">✅ SLA: ${txt} restantes</div>`;
+  }
+}
+
+/* =========================================================
+   MODAIS LGPD / TERMOS / ACESSIBILIDADE
+   ========================================================= */
+function abrirModalDoc(tipo) {
+  document.getElementById('modal-' + tipo).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function fecharModalDoc(tipo) {
+  document.getElementById('modal-' + tipo).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* =========================================================
+   ADMIN — AVISOS
+   ========================================================= */
+function publicarAviso() {
+  const emoji = document.getElementById('aviso-emoji').value || '📢';
+  const titulo = document.getElementById('aviso-titulo').value.trim();
+  const corpo = document.getElementById('aviso-corpo').value.trim();
+  if (!titulo || !corpo) { showToast('⚠️ Preencha o título e a mensagem'); return; }
+  db.collection('avisos').add({
+    emoji, titulo, corpo,
+    data: new Date().toLocaleDateString('pt-BR'),
+    _ts: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    document.getElementById('aviso-emoji').value = '📢';
+    document.getElementById('aviso-titulo').value = '';
+    document.getElementById('aviso-corpo').value = '';
+    showToast('📢 Aviso publicado com sucesso!');
+  }).catch(err => { console.error('Erro ao publicar aviso:', err); showToast('❌ Erro ao publicar aviso.'); });
+}
+function renderAdminAvisos() {
+  const container = document.getElementById('admin-lista-avisos');
+  if (!avisos.length) { container.innerHTML = '<p style="color:var(--text2)">Nenhum aviso publicado ainda.</p>'; return; }
+  container.innerHTML = avisos.map(a => `
+    <div class="aviso-item" style="position:relative">
+      <div class="aviso-topo">
+        <div class="aviso-emo">${a.emoji}</div>
+        <div><div class="aviso-titulo">${a.titulo}</div><div class="aviso-data">📅 ${a.data}</div></div>
+      </div>
+      <div class="aviso-body">${a.corpo}</div>
+      <button onclick="deletarAviso('${a._docId}')"
+        style="position:absolute;top:14px;right:14px;background:var(--danger-lt);border:none;color:var(--danger);font-size:11px;font-weight:800;padding:6px 12px;border-radius:var(--r-sm);cursor:pointer;min-height:36px;touch-action:manipulation;font-family:var(--font-body)">Remover</button>
+    </div>
+  `).join('');
+}
+function deletarAviso(docId) {
+  db.collection('avisos').doc(docId).delete()
+    .then(() => showToast('🗑️ Aviso removido'))
+    .catch(err => { console.error('Erro ao remover aviso:', err); showToast('❌ Erro ao remover aviso.'); });
+}
+
+/* =========================================================
+   ADMIN — TABS / FILTROS
+   ========================================================= */
+function switchAdminTab(tab) {
+  document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('atc-' + tab).classList.add('active');
+  document.getElementById('atab-' + tab).classList.add('active');
+  if (tab === 'log') filtrarLog(_logFiltroAtual);
+}
+function filtrarAdmin(btnEl, filtro) {
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+  btnEl.classList.add('active');
+  renderAdminLista(filtro);
+}
+
+/* =========================================================
+   ADMIN — EXPORTAR CSV
+   ========================================================= */
+function exportarCSV() {
+  const cabecalho = ['Protocolo','Tipo','Local','Status','Prioridade','Nome','WhatsApp','Data','Descrição'];
+  const linhas = solicitacoes.map(s => [
+    s.id, s.tipo, s.local, s.status, s.prioridade, s.nome, s.whatsapp, s.data,
+    '"' + s.descricao.replace(/"/g,'""') + '"'
+  ].join(';'));
+  const csv = [cabecalho.join(';'), ...linhas].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type:'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `solicitacoes_licinio_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('📥 CSV exportado com sucesso!');
+}
+
+/* =========================================================
+   CONFIG TOGGLE
+   ========================================================= */
+function toggleConfig(el) {
+  el.classList.toggle('on');
+  showToast(el.classList.contains('on') ? '✅ Ativado' : '⚫ Desativado');
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('bnav-nova').classList.add('active');
+  document.querySelectorAll('.nav-pill')[0].classList.add('active');
+  document.getElementById('sb-nova').classList.add('active');
+  updateHeroStats();
+
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('focus', () => {
+      if (window.innerWidth < 600) setTimeout(() => el.scrollIntoView({behavior:'smooth', block:'center'}), 300);
+    });
+  });
+
+  /* Abre guia na aba certa conforme dispositivo */
+  if (typeof isIOS !== 'undefined' && isIOS) switchGuideTab('ios');
+});
+
+window.addEventListener('popstate', () => {
+  if (document.getElementById('modal-track').classList.contains('open'))
+    document.getElementById('modal-track').classList.remove('open');
+  if (document.getElementById('modal-detalhe').classList.contains('open'))
+    document.getElementById('modal-detalhe').classList.remove('open');
+});
+
+/* ═══════════════════════════════════════
+   PWA — Service Worker + Install Banner
+═══════════════════════════════════════ */
+
+/* Registro do Service Worker */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => {
+        console.log('[PWA] Service Worker registrado:', reg.scope);
+
+        /* Detecta nova versão disponível */
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateBanner();
+            }
+          });
+        });
+      })
+      .catch(err => console.warn('[PWA] Falha ao registrar SW:', err));
+  });
+}
+
+/* ─── Detecta se é iOS ─── */
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isInStandaloneMode = ('standalone' in navigator) && navigator.standalone;
+
+/* Banner de instalação (A2HS) */
+let deferredPrompt = null;
+let bannerDismissed = false;
+
+function showInstallBanner() {
+  if (bannerDismissed) return;
+  /* Não mostra se já passou 7 dias desde o dismiss */
+  const dismissed = localStorage.getItem('pwa-banner-dismissed');
+  if (dismissed && Date.now() - parseInt(dismissed) < 7 * 24 * 60 * 60 * 1000) return;
+  /* Não mostra se já está instalado */
+  if (isInStandaloneMode) return;
+
+  const banner = document.getElementById('pwa-install-banner');
+  if (!banner) return;
+
+  if (isIOS) {
+    /* iOS: mostrar instruções manuais */
+    document.getElementById('pwa-banner-sub-text').textContent = 'Toque em  ⎋  e depois "Adicionar à Tela Inicial"';
+    document.getElementById('pwa-btn-install-main').textContent = 'Como instalar?';
+    banner.classList.add('show');
+  }
+}
+
+window.addEventListener('beforeinstallprompt', e => {
+  /* Captura o evento para usar quando o usuário clicar — isso é correto e esperado! */
+  e.preventDefault();
+  deferredPrompt = e;
+
+  const banner = document.getElementById('pwa-install-banner');
+  if (banner) {
+    setTimeout(() => {
+      const dismissed = localStorage.getItem('pwa-banner-dismissed');
+      if (dismissed && Date.now() - parseInt(dismissed) < 7 * 24 * 60 * 60 * 1000) return;
+      if (!isInStandaloneMode) banner.classList.add('show');
+    }, 3000);
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  const banner = document.getElementById('pwa-install-banner');
+  if (banner) banner.classList.remove('show');
+  showToast('✅ App instalado! Abra pela tela inicial.');
+  console.log('[PWA] App instalado com sucesso!');
+});
+
+/* Mostra banner iOS depois de 4s se aplicável */
+if (isIOS && !isInStandaloneMode) {
+  window.addEventListener('load', () => setTimeout(showInstallBanner, 4000));
+}
+
+function installPWA() {
+  if (isIOS) {
+    /* iOS: mostra modal visual com instruções */
+    document.getElementById('pwa-guide-modal').classList.add('open');
+    return;
+  }
+  if (!deferredPrompt) {
+    /* Android sem prompt: mostra guia visual */
+    document.getElementById('pwa-guide-modal').classList.add('open');
+    return;
+  }
+  /* Chrome/Android com prompt disponível: chama direto e fecha banner */
+  const banner = document.getElementById('pwa-install-banner');
+  if (banner) banner.classList.remove('show');
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(choice => {
+    if (choice.outcome === 'accepted') {
+      showToast('✅ App adicionado à tela inicial!');
+    } else {
+      showToast('ℹ️ Instalação cancelada');
+    }
+    deferredPrompt = null;
+  });
+}
+
+function closePwaGuide() {
+  document.getElementById('pwa-guide-modal').classList.remove('open');
+}
+
+function dismissInstallBanner() {
+  bannerDismissed = true;
+  const banner = document.getElementById('pwa-install-banner');
+  if (banner) banner.classList.remove('show');
+  /* Não mostra novamente por 7 dias */
+  localStorage.setItem('pwa-banner-dismissed', Date.now());
+}
+
+function showUpdateBanner() {
+  const b = document.getElementById('pwa-update-banner');
+  if (b) b.classList.add('show');
+}
+
+function applyUpdate() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg && reg.waiting) {
+        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+    });
+  }
+  location.reload();
+}
+
+function switchGuideTab(tab) {
+  document.getElementById('tab-android').classList.toggle('active', tab === 'android');
+  document.getElementById('tab-ios').classList.toggle('active', tab === 'ios');
+  document.getElementById('panel-android').classList.toggle('active', tab === 'android');
+  document.getElementById('panel-ios').classList.toggle('active', tab === 'ios');
+}
+</script>
+
+<!-- ═══ PWA BANNERS ═══ -->
+<style>
+/* Banner de instalação */
+#pwa-install-banner {
+  position: fixed;
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  left: 12px; right: 12px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.08);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 500;
+  transform: translateY(120%);
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  border: 1.5px solid rgba(14,184,127,0.18);
+  max-width: 480px;
+  margin: 0 auto;
+}
+@media (min-width: 900px) {
+  #pwa-install-banner {
+    left: auto; right: 24px;
+    bottom: 24px;
+    max-width: 380px;
+  }
+}
+#pwa-install-banner.show { transform: translateY(0); }
+.pwa-banner-icon {
+  width: 50px; height: 50px;
+  background: linear-gradient(135deg, #0EB87F 0%, #09966A 100%);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(14,184,127,0.35);
+}
+.pwa-banner-text { flex: 1; min-width: 0; }
+.pwa-banner-title {
+  font-size: 14px; font-weight: 800;
+  color: #0D1B30; line-height: 1.2;
+}
+.pwa-banner-sub {
+  font-size: 11.5px; color: #4A5A74;
+  margin-top: 3px; line-height: 1.45;
+}
+.pwa-banner-actions {
+  display: flex; gap: 8px; align-items: center;
+}
+.pwa-btn-install {
+  background: linear-gradient(135deg, #0EB87F, #09966A);
+  color: #fff; border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px; font-weight: 800;
+  cursor: pointer; white-space: nowrap;
+  font-family: inherit;
+  box-shadow: 0 4px 14px rgba(14,184,127,0.4);
+  transition: opacity 0.18s;
+  min-height: 40px;
+  touch-action: manipulation;
+}
+.pwa-btn-install:active { opacity: 0.85; }
+.pwa-btn-dismiss {
+  background: none; border: none;
+  font-size: 20px; color: #8696B2;
+  cursor: pointer; padding: 4px;
+  line-height: 1; flex-shrink: 0;
+  touch-action: manipulation;
+}
+
+/* Banner de atualização */
+#pwa-update-banner {
+  position: fixed;
+  top: calc(70px + env(safe-area-inset-top, 0px));
+  left: 12px; right: 12px;
+  background: #0D2137;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 500;
+  transform: translateY(-200%);
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  max-width: 480px;
+  margin: 0 auto;
+}
+#pwa-update-banner.show { transform: translateY(0); }
+.pwa-update-text {
+  flex: 1; font-size: 13px;
+  color: rgba(255,255,255,0.85); line-height: 1.4;
+  font-weight: 600;
+}
+.pwa-btn-update {
+  background: #0EB87F; color: #fff;
+  border: none; border-radius: 8px;
+  padding: 9px 16px; font-size: 12px;
+  font-weight: 800; cursor: pointer;
+  font-family: inherit; white-space: nowrap;
+  touch-action: manipulation; min-height: 36px;
+}
+</style>
+
+<!-- Banner: instalar app -->
+<div id="pwa-install-banner" role="dialog" aria-label="Instalar aplicativo">
+  <div class="pwa-banner-icon">🏛️</div>
+  <div class="pwa-banner-text">
+    <div class="pwa-banner-title">Instalar Licínio Resolve</div>
+    <div class="pwa-banner-sub" id="pwa-banner-sub-text">Acesse sem internet · Notificações · Tela inicial</div>
+  </div>
+  <div class="pwa-banner-actions">
+    <button class="pwa-btn-install" id="pwa-btn-install-main" onclick="installPWA()">Instalar</button>
+    <button class="pwa-btn-dismiss" onclick="dismissInstallBanner()" aria-label="Fechar">✕</button>
+  </div>
+</div>
+
+<!-- Banner: nova versão disponível -->
+<div id="pwa-update-banner" role="alert">
+  <span style="font-size:20px">🔄</span>
+  <div class="pwa-update-text">Nova versão disponível!</div>
+  <button class="pwa-btn-update" onclick="applyUpdate()">Atualizar</button>
+</div>
+
+
+<!-- ═══ MODAL CONFIRMAR EXCLUSÃO ═══ -->
+<div id="modal-confirmar-exclusao" onclick="if(event.target===this)fecharModalExclusao()">
+  <div class="exclusao-sheet">
+    <div class="exclusao-icon">🗑️</div>
+    <div class="exclusao-titulo">Apagar solicitação?</div>
+    <div class="exclusao-id" id="exclusao-id-label"></div>
+    <div class="exclusao-desc">
+      Essa ação é <strong>permanente</strong> e não pode ser desfeita.<br>
+      A solicitação será removida do sistema.
+    </div>
+    <div class="exclusao-acoes">
+      <button class="btn-exclusao-cancelar" onclick="fecharModalExclusao()">Cancelar</button>
+      <button class="btn-exclusao-confirmar" id="btn-confirmar-excluir" onclick="executarExclusao()">Sim, apagar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL GUIA DE INSTALAÇÃO PWA ═══ -->
+<style>
+#pwa-guide-modal {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(7,22,42,0.72);
+  z-index: 600;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+#pwa-guide-modal.open { display: flex; }
+.pwa-guide-sheet {
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 8px 20px 36px;
+  animation: sheetUp 0.32s cubic-bezier(0.32,0.72,0,1);
+  max-height: 92dvh; max-height: 92vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.pwa-guide-handle {
+  width: 40px; height: 4px;
+  background: #D4DAE6; border-radius: 2px;
+  margin: 12px auto 20px;
+}
+.pwa-guide-header { text-align: center; margin-bottom: 20px; }
+.pwa-guide-header h3 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px; font-weight: 800; color: #0D1B30; margin-bottom: 6px;
+}
+.pwa-guide-header p { font-size: 13px; color: #4A5A74; line-height: 1.5; }
+.pwa-guide-tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+.pwa-guide-tab {
+  flex: 1; padding: 9px 6px;
+  border-radius: 10px; border: 2px solid #EAEEf4;
+  background: #F4F7FA; font-size: 12px; font-weight: 700;
+  color: #4A5A74; cursor: pointer; font-family: inherit;
+  touch-action: manipulation; transition: all 0.18s;
+}
+.pwa-guide-tab.active { background: #0D2137; color: #fff; border-color: #0D2137; }
+.pwa-guide-panel { display: none; }
+.pwa-guide-panel.active { display: block; }
+.pwa-guide-steps { display: flex; flex-direction: column; }
+.pwa-step { display: flex; gap: 16px; align-items: flex-start; padding-bottom: 20px; }
+.pwa-step:last-child { padding-bottom: 0; }
+.pwa-step-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 44px; }
+.pwa-step-num {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, #0EB87F, #09966A);
+  color: #fff; font-size: 18px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  box-shadow: 0 4px 12px rgba(14,184,127,0.35);
+}
+.pwa-step-line {
+  width: 2px; flex: 1; min-height: 14px;
+  background: linear-gradient(to bottom, #0EB87F55, #D4DAE6);
+  margin-top: 4px;
+}
+.pwa-step:last-child .pwa-step-line { display: none; }
+.pwa-step-content { padding-top: 10px; flex: 1; }
+.pwa-step-title { font-size: 14px; font-weight: 800; color: #0D1B30; margin-bottom: 4px; }
+.pwa-step-desc { font-size: 12.5px; color: #4A5A74; line-height: 1.55; }
+.pwa-highlight-box {
+  background: linear-gradient(135deg, #E4F9F2, #f4fdf9);
+  border: 2px solid rgba(14,184,127,0.3);
+  border-radius: 14px; padding: 12px 14px; margin-top: 10px;
+  display: flex; align-items: center; gap: 12px;
+}
+.pwa-highlight-box span { font-size: 13px; font-weight: 700; color: #09966A; line-height: 1.45; }
+.pwa-arrow-bounce {
+  display: inline-block;
+  animation: arrowBounce 0.9s ease-in-out infinite;
+  color: #0EB87F;
+}
+@keyframes arrowBounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(5px); }
+}
+.pwa-guide-close {
+  width: 100%; margin-top: 24px;
+  background: #0D2137; color: #fff;
+  border: none; border-radius: 14px;
+  padding: 16px; font-size: 14px; font-weight: 800;
+  cursor: pointer; font-family: inherit; touch-action: manipulation;
+  min-height: 52px;
+}
+.pwa-guide-close:active { opacity: 0.85; }
+</style>
+
+<div id="pwa-guide-modal" onclick="if(event.target===this)closePwaGuide()">
+  <div class="pwa-guide-sheet">
+    <div class="pwa-guide-handle"></div>
+    <div class="pwa-guide-header">
+      <div style="font-size:48px;margin-bottom:10px">&#128242;</div>
+      <h3>Instalar na Tela Inicial</h3>
+      <p>Siga os passos abaixo para instalar o app no seu celular</p>
+    </div>
+    <div class="pwa-guide-tabs">
+      <button class="pwa-guide-tab active" id="tab-android" onclick="switchGuideTab('android')">&#129302; Android</button>
+      <button class="pwa-guide-tab" id="tab-ios" onclick="switchGuideTab('ios')">&#127822; iPhone / iPad</button>
+    </div>
+    <!-- Android -->
+    <div class="pwa-guide-panel active" id="panel-android">
+      <div class="pwa-guide-steps">
+        <div class="pwa-step">
+          <div class="pwa-step-left"><div class="pwa-step-num">1</div><div class="pwa-step-line"></div></div>
+          <div class="pwa-step-content">
+            <div class="pwa-step-title">Toque nos 3 pontinhos do Chrome</div>
+            <div class="pwa-step-desc">No canto superior direito do navegador</div>
+            <div class="pwa-highlight-box">
+              <span style="font-size:30px">&#8942;</span>
+              <span>Menu no canto superior<br>direito da tela <span class="pwa-arrow-bounce">&#8593;</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="pwa-step">
+          <div class="pwa-step-left"><div class="pwa-step-num">2</div><div class="pwa-step-line"></div></div>
+          <div class="pwa-step-content">
+            <div class="pwa-step-title">Toque em "Adicionar &agrave; tela inicial"</div>
+            <div class="pwa-step-desc">Role o menu e toque nessa op&ccedil;&atilde;o</div>
+            <div class="pwa-highlight-box">
+              <span style="font-size:26px">&#10133;</span>
+              <span>"Adicionar &agrave; tela inicial"<br><span style="font-weight:500;color:#4A5A74">ou "Instalar app"</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="pwa-step">
+          <div class="pwa-step-left"><div class="pwa-step-num">3</div></div>
+          <div class="pwa-step-content">
+            <div class="pwa-step-title">Confirme tocando em "Instalar" &#9989;</div>
+            <div class="pwa-step-desc">O &iacute;cone do app vai aparecer na sua tela inicial!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- iOS -->
+    <div class="pwa-guide-panel" id="panel-ios">
+      <div class="pwa-guide-steps">
+        <div class="pwa-step">
+          <div class="pwa-step-left"><div class="pwa-step-num">1</div><div class="pwa-step-line"></div></div>
+          <div class="pwa-step-content">
+            <div class="pwa-step-title">Toque no &iacute;cone de Compartilhar</div>
+            <div class="pwa-step-desc">Na barra inferior do Safari</div>
+            <div class="pwa-highlight-box">
+              <span style="font-size:30px">&#9099;</span>
+              <span>&Iacute;cone de compartilhar<br>na barra inferior <span class="pwa-arrow-bounce">&#8595;</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="pwa-step">
+          <div class="pwa-step-left"><div class="pwa-step-num">2</div><div class="pwa-step-line"></div></div>
+          <div class="pwa-step-content">
+            <div class="pwa-step-title">Toque em "Adicionar &agrave; Tela de In&iacute;cio"</div>
+            <div class="pwa-step-desc">Role o menu para baixo at&eacute; encontrar</div>
+            <div class="pwa-highlight-box">
+              <span style="font-size:26px">&#65291;</span>
+              <span>"Adicionar &agrave;<br>Tela de In&iacute;cio"</span>
+            </div>
+          </div>
+        </div>
+        <div class="pwa-step">
+          <div class="pwa-step-left"><div class="pwa-step-num">3</div></div>
+          <div class="pwa-step-content">
+            <div class="pwa-step-title">Toque em "Adicionar" no canto superior direito &#9989;</div>
+            <div class="pwa-step-desc">O &iacute;cone do app aparecer&aacute; na tela inicial!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="pwa-guide-close" onclick="closePwaGuide()">Entendido &#10003;</button>
+  </div>
+</div>
+
+
+
+</body>
+</html>
