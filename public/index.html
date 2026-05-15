@@ -2962,8 +2962,8 @@ img, iframe, video {
 <!-- Footer -->
 <footer class="footer-gov">
   <strong>Prefeitura Municipal de Licínio de Almeida</strong><br>
-  CNPJ 12.345.678/0001-01 · Bahia · Brasil<br>
-  <span style="font-size:10px;opacity:0.6">Plataforma fornecida por <strong style="color:rgba(255,255,255,0.5)"> · Dhonatan Aymar</strong> </span>
+  CNPJ 14.105.183/0001-57 · Bahia · Brasil<br>
+  <span style="font-size:10px;opacity:0.6">Plataforma fornecida por <strong style="color:rgba(255,255,255,0.5)">Cidade na Mão</strong> · Dhonatan Aymar</span>
   <div class="footer-links">
     <a href="#" onclick="switchNav(null,'sobre');return false">Sobre o sistema</a>
     <a href="#" onclick="openTracking();return false">Consultar protocolo</a>
@@ -3467,6 +3467,12 @@ img, iframe, video {
 </div>
 
 <!-- ═══════════════════════════════════════
+     CONFIGURAÇÕES PRIVADAS (não versionar)
+     Arquivo: config.js  →  veja config.example.js
+═══════════════════════════════════════ -->
+<script src="/config.js"></script>
+
+<!-- ═══════════════════════════════════════
      FIREBASE SDK
 ═══════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -3475,17 +3481,22 @@ img, iframe, video {
 
 <script>
 /* =========================================================
-   FIREBASE — INICIALIZAÇÃO
+   FIREBASE — INICIALIZAÇÃO (via config.js externo)
    ========================================================= */
-const firebaseConfig = {
-  apiKey: "AIzaSyANjF3duN_D7WCRxaM0vIY1hES3uKd60l4",
-  authDomain: "licinio-resolve.firebaseapp.com",
-  projectId: "licinio-resolve",
-  storageBucket: "licinio-resolve.firebasestorage.app",
-  messagingSenderId: "298938773914",
-  appId: "1:298938773914:web:3807b984bd3363cf9a8a23",
-  measurementId: "G-B28R2ELHNY"
-};
+if (!window.APP_CONFIG) {
+  document.body.innerHTML = `
+    <div style="font-family:sans-serif;max-width:480px;margin:80px auto;padding:32px;background:#FEF2F2;border-radius:16px;border:2px solid #E53935;text-align:center">
+      <div style="font-size:48px;margin-bottom:16px">⚠️</div>
+      <h2 style="color:#C62828;margin-bottom:10px">Arquivo de configuração ausente</h2>
+      <p style="color:#555;font-size:14px;line-height:1.6">
+        O arquivo <strong>config.js</strong> não foi encontrado na pasta do site.<br><br>
+        Copie o <code>config.example.js</code>, renomeie para <code>config.js</code> e preencha com seus dados reais.
+      </p>
+    </div>`;
+  throw new Error('config.js não encontrado. Veja config.example.js para instruções.');
+}
+
+const firebaseConfig = window.APP_CONFIG.firebase;
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -3884,10 +3895,9 @@ function renderAvisosPublico() {
    WHATSAPP — BACKEND AUTOMÁTICO
    ========================================================= */
 
-// 🔧 Altere para o endereço do seu servidor
-const BACKEND_URL = 'http://localhost:3001';
-
-const ADMIN_WPP = '5577999999999';
+// 🔧 Configurações carregadas do config.js (privado)
+const BACKEND_URL = window.APP_CONFIG.backendUrl;
+const ADMIN_WPP   = window.APP_CONFIG.adminWhatsapp;
 
 // Envia confirmação automática ao cidadão via backend
 async function enviarConfirmacaoAutomatica(whatsapp, proto, tipo, local, nome) {
